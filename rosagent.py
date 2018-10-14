@@ -11,26 +11,36 @@ class ROSAgent(object):
         # Get the vehicle name, which comes in as HOSTNAME
         self.vehicle = os.getenv('HOSTNAME')
         
-        # Subscribes to the output of the lane_controller_node
-        self.action_sub = rospy.Subscriber('/{}/lane_controller_node/car_cmd'.format(
+        # Subscribes to the action topic you'll be publishing your action messages on
+        self.action_sub = rospy.Subscriber('/{}/action_topic'.format(
             self.vehicle), Twist2DStamped, self._action_cb)
-        # Place holder for the action
+        # Place holder for the action, which will be read by the agent in solution.py
         self.action = np.array([0, 0])
 
         # Publishes onto the corrected image topic 
         # since image out of simulator is currently rectified
-        self.cam_pub = rospy.Publisher('/{}/corrected_image/compressed'.format(
+        self.cam_pub = rospy.Publisher('/{}/image_topic'.format(
             self.vehicle), CompressedImage, queue_size=10)
         
         # Publisher for camera info - needed for the ground_projection
-        self.cam_info_pub = rospy.Publisher('/{}/camera_node/camera_info'.format(
+        self.cam_info_pub = rospy.Publisher('/{}/camera_info_topic'.format(
             self.vehicle), CameraInfo, queue_size=1)
 
         # Initializes the node
-        rospy.init_node('ROSAgent')
+        rospy.init_node('ROSTemplate')
 
-        # 10Hz ROS Cycle - TODO: What is this number?
-        self.r = rospy.Rate(10)
+        # 15Hz ROS Cycle - TODO: What is this number?
+        self.r = rospy.Rate(15)
+
+    def _TEMPLATE_action_publisher(self):
+        """
+        TODO: You need to change this!
+        Random action publisher - so your submission does something
+        """
+        
+        v = np.random.random()
+        omega = np.random.random()
+        self.action = np.array([v, omega])
 
     def _action_cb(self, msg):
         """
@@ -45,6 +55,10 @@ class ROSAgent(object):
         """
         Publishes a default CameraInfo - TODO: Fix after distortion applied in simulator
         """
+
+        # # TODO - You need to remove this! Triggers random action
+        self._TEMPLATE_action_publisher()
+
         self.cam_info_pub.publish(CameraInfo())      
 
     def _publish_img(self, obs):
@@ -61,15 +75,4 @@ class ROSAgent(object):
         contig = cv2.cvtColor(np.ascontiguousarray(obs), cv2.COLOR_BGR2RGB)
         img_msg.data = np.array(cv2.imencode('.jpg', contig)[1]).tostring()
   
-        self.cam_pub.publish(img_msg)    
-
-    def spin(self):
-        """
-        Main loop
-        Steps the sim with the last action at rate of 10Hz
-        """
-        while not rospy.is_shutdown():
-            img, r , d, _ = self.sim.step(self.action)
-            self._publish_img(img)
-            self._publish_info()
-            self.r.sleep()
+        self.cam_pub.publish(img_msg)

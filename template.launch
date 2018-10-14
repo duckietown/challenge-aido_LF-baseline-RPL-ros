@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+    <!-- Nothing inside - will just start a ROSMaster -->
+</launch>

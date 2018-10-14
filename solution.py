@@ -27,13 +27,11 @@ def solve(gym_environment, cis):
     # Then we make sure we have a connection with the environment and it is ready to go
     cis.info('Reset environment')
     observation = env.reset()
-    # While there are no signal of completion (simulation done)
-    # we run the predictions for a number of episodes, don't worry, we have the control on this part
 
     # Now, initialize the ROS stuff here:
     uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
     roslaunch.configure_logging(uuid)
-    roslaunch_path = os.path.join(os.getcwd(), "lf_slim.launch")
+    roslaunch_path = os.path.join(os.getcwd(), "template.launch")
     launch = roslaunch.parent.ROSLaunchParent(uuid, [roslaunch_path])
     launch.start()
  
@@ -41,6 +39,8 @@ def solve(gym_environment, cis):
     agent = ROSAgent()
     r = rospy.Rate(15)
 
+    # While there are no signal of completion (simulation done)
+    # we run the predictions for a number of episodes, don't worry, we have the control on this part
     while not rospy.is_shutdown():
         # we passe the observation to our model, and we get an action in return
         # we tell the environment to perform this action and we get some info back in OpenAI Gym style
