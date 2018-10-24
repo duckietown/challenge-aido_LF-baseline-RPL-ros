@@ -10,8 +10,6 @@ import os
 import rospy
 import roslaunch
 from rosagent import ROSAgent
-import subprocess
-import time
 
 
 def solve(gym_environment, cis):
@@ -82,11 +80,8 @@ class Submission(ChallengeSolution):
 
         gym_environment = params['env']
 
-        try:
-            cis.info('Starting.')
-            solve(gym_environment, cis)  # let's try to solve the challenge, exciting ah?
-        except BaseException as e:
-            raise InvalidSubmission(str(e))
+        cis.info('Starting.')
+        solve(gym_environment, cis)
 
         cis.set_solution_output_dict({})
         cis.info('Finished.')

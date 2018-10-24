@@ -1,5 +1,5 @@
 challenge: aido1_LF1_r2-v3
-protocol: aido1_remote2-v3
+protocol: aido1_remote3-v3
 user-label: "Template for ROS Submission"
 description: |
     This is a RandomAgent template for an agent that does ROS-based Lane Following

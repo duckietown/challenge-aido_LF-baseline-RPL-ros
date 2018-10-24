@@ -1,0 +1,42 @@
+
+# We start from a base ROS image
+FROM duckietown/rpi-duckiebot-base:master18
+
+RUN ["cross-build-start"]
+
+# DO NOT MODIFY: your submission won't run if you do
+RUN apt-get update -y && apt-get install -y --no-install-recommends \
+         gcc \
+         libc-dev\
+         git \
+         bzip2 \
+         python-tk \
+         python-wheel \
+         python-pip && \
+     rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+# here, we install the requirements, some requirements come by default
+# you can add more if you need to in requirements.txt
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# For ROS Agent - Need to upgrade Pillow for Old ROS stack
+RUN pip install pillow --user --upgrade
+
+# Source it to add messages to path
+RUN echo "source /home/software/catkin_ws/devel/setup.bash" >> ~/.bashrc
+RUN echo "source /opt/ros/kinetic/devel/setup.bash" >> ~/.bashrc
+
+# DO NOT MODIFY: your submission won't run if you do
+ENV DUCKIETOWN_SERVER=evaluator
+
+# For ROS Agent - pulls the default configuration files
+# Think of this as the vehicle name
+ENV HOSTNAME=default
+
+RUN ["cross-build-end"]
+ENTRYPOINT ["qemu3-arm-static"]
+
+
