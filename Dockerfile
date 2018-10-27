@@ -35,8 +35,8 @@ COPY rosagent.py ./
 COPY template.launch ./
 
 # Source it to add messages to path
-RUN echo "source /home/software/catkin_ws/devel/setup.bash" >> ~/.bashrc
 RUN echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+RUN echo "source /home/software/catkin_ws/devel/setup.bash" >> ~/.bashrc
 RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python2.7/dist-packages:$PYTHONPATH""
 
 # DO NOT MODIFY: your submission won't run if you do
