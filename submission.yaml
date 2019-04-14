@@ -1,7 +1,7 @@
 challenge:
-  - aido2_LF_r2-v4
-protocol: aido2_db18_agent_1
-user-label: "Baseline solution using reinforcement learning"
+  - aido2-LF-sim-testing
+protocol: aido2_db18_agent-z2
+user-label: "Template solution using ROS"
 user-payload: {}
 description: |
-    This is a simple baseline solution for an agent learns to imitate behavior from logs
+    This is a simple random agent that operates through ROS

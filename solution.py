@@ -5,6 +5,8 @@ from zuper_nodes_python2 import wrap_direct
 import os
 import rospy
 import roslaunch
+import numpy as np
+
 from rosagent import ROSAgent
 
 class ROSTemplateAgent(object):
@@ -30,12 +32,14 @@ class ROSTemplateAgent(object):
 
     def on_received_observations(self, context, data):
         jpg_data = data['camera']['jpg_data']
-        obs = jpg2rgb(camera.jpg_data)
+        obs = jpg2rgb(jpg_data)
         self.agent._publish_img(obs)
         self.agent._publish_info()
 
     def on_received_get_commands(self, context, data):
         pwm_left, pwm_right = self.agent.action
+
+        rgb = {'r': 0.5, 'g': 0.5, 'b': 0.5}
         commands = {
             'wheels': {
                 'motor_left': pwm_left,
@@ -56,7 +60,7 @@ class ROSTemplateAgent(object):
         context.info('finish()')
 
 
-def jpg2rgb(image_data: bytes) -> np.ndarray:
+def jpg2rgb(image_data):
     """ Reads JPG bytes as RGB"""
     from PIL import Image
     import io
@@ -69,5 +73,5 @@ def jpg2rgb(image_data: bytes) -> np.ndarray:
 
 
 if __name__ == '__main__':
-    node = ROSTemplateAgent()
+    agent = ROSTemplateAgent()
     wrap_direct(agent)
