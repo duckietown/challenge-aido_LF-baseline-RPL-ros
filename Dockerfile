@@ -1,7 +1,7 @@
 # Definition of Submission container
 
 # We start from a base ROS image
-FROM duckietown/rpi-duckiebot-base:master18
+FROM duckietown/rpi-duckiebot-base:master19
 
 RUN ["cross-build-start"]
 
@@ -36,9 +36,6 @@ COPY template.launch ./
 
 RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python2.7/dist-packages:$PYTHONPATH""
 
-# DO NOT MODIFY: your submission won't run if you do
-ENV DUCKIETOWN_SERVER=evaluator
-
 # For ROS Agent - pulls the default configuration files 
 # Think of this as the vehicle name
 ENV HOSTNAME=default
@@ -48,4 +45,5 @@ ENTRYPOINT ["qemu3-arm-static"]
 
 # let's see what you've got there...
 
+ENV DISABLE_CONTRACTS=1
 CMD ["/bin/bash", "-ci", "./solution.py"]
