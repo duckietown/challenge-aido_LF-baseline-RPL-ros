@@ -15,9 +15,9 @@ For submitting, please follow [the instructions available in the book][book].
 
 [lf]: http://docs.duckietown.org/DT19/AIDO/out/lf.html
 
-[lfv]: http://docs.duckietown.org/DT19/AIDO/out/lfv.html
+[lfv]: http://docs.duckietown.org/DT19/AIDO/out/lf_v.html
 
-[lfvi]: http://docs.duckietown.org/DT19/AIDO/out/lfvi.html
+[lfvi]: http://docs.duckietown.org/DT19/AIDO/out/lf_v_i.html
 
 ## Description
 
