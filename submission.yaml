@@ -1,7 +1,8 @@
-challenge:
-  - aido2-LF-sim-testing
+#challenge: # defaults to all compatible challenges
+#  - aido2-LF-sim-testing
+
 protocol: aido2_db18_agent-z2
-user-label: "Template solution using ROS"
+user-label: "challenge-aido_LF-template-ros"
 user-payload: {}
 description: |
     This is a simple random agent that operates through ROS
