@@ -21,6 +21,6 @@ For submitting, please follow [the instructions available in the book][book].
 
 ## Description
 
-This is a baseline solution for a ROS agent that uses the Duckietown code.
+This is a template solution using ROS.
 
-[This code is documented here](https://docs.duckietown.org/DT19/AIDO/out/ros_baseline.html).
+[This code is documented here](https://docs.duckietown.org/DT19/AIDO/out/ros_template.html).
