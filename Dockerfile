@@ -1,9 +1,7 @@
 # Definition of Submission container
 
 # We start from a base ROS image
-FROM duckietown/rpi-duckiebot-base:master19
-
-RUN ["cross-build-start"]
+FROM duckietown/rpi-duckiebot-base:master19-no-arm
 
 # DO NOT MODIFY: your submission won't run if you do
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
@@ -40,10 +38,7 @@ RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python2.7/dist-packages:$PYT
 # Think of this as the vehicle name
 ENV HOSTNAME=default
 
-RUN ["cross-build-end"]
-ENTRYPOINT ["qemu3-arm-static"]
-
 # let's see what you've got there...
 
 ENV DISABLE_CONTRACTS=1
-CMD ["/bin/bash", "-ci", "./solution.py"]
+CMD ["python", "solution.py"]
