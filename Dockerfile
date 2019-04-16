@@ -34,8 +34,6 @@ COPY template.launch ./
 
 RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python2.7/dist-packages:$PYTHONPATH""
 
-ENV ROS_LOG_DIR=$HOME/.ros 
-
 # For ROS Agent - pulls the default configuration files 
 # Think of this as the vehicle name
 ENV HOSTNAME=default
