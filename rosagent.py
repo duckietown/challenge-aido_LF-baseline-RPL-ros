@@ -15,6 +15,7 @@ class ROSAgent(object):
             self.vehicle), WheelsCmdStamped, self._ik_action_cb)
         # Place holder for the action, which will be read by the agent in solution.py
         self.action = np.array([0, 0])
+        self.updated = True
 
         # Publishes onto the corrected image topic 
         # since image out of simulator is currently rectified
@@ -49,6 +50,7 @@ class ROSAgent(object):
         vl = msg.vel_left
         vr = msg.vel_right
         self.action = np.array([vl, vr])
+        self.updated = True
     
     def _publish_info(self):
         """
