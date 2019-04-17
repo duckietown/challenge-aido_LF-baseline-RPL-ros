@@ -41,6 +41,7 @@ class ROSAgent(object):
         vl = np.random.random()
         vr = np.random.random()
         self.action = np.array([vl, vr])
+        self.updated = True
 
     def _ik_action_cb(self, msg):
         """
