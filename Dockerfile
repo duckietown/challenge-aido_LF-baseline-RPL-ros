@@ -1,7 +1,7 @@
 # Definition of Submission container
 
 # We start from a base ROS image
-FROM duckietown/rpi-duckiebot-base:master19-no-arm
+FROM duckietown/dt-core:daffy-amd64
 
 # DO NOT MODIFY: your submission won't run if you do
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
