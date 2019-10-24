@@ -14,14 +14,14 @@ class ROSAgent(object):
         self.ik_action_sub = rospy.Subscriber('/{}/ik_action_topic'.format(
             self.vehicle), WheelsCmdStamped, self._ik_action_cb)
         # Place holder for the action, which will be read by the agent in solution.py
-        self.action = np.array([0, 0])
+        self.action = np.array([0.0, 0.0])
         self.updated = True
 
-        # Publishes onto the corrected image topic 
+        # Publishes onto the corrected image topic
         # since image out of simulator is currently rectified
         self.cam_pub = rospy.Publisher('/{}/image_topic'.format(
             self.vehicle), CompressedImage, queue_size=10)
-        
+
         # Publisher for camera info - needed for the ground_projection
         self.cam_info_pub = rospy.Publisher('/{}/camera_info_topic'.format(
             self.vehicle), CameraInfo, queue_size=1)
@@ -37,7 +37,7 @@ class ROSAgent(object):
         TODO: You need to change this!
         Random action publisher - so your submission does something
         """
-        
+
         vl = np.random.random()
         vr = np.random.random()
         self.action = np.array([vl, vr])
@@ -52,7 +52,7 @@ class ROSAgent(object):
         vr = msg.vel_right
         self.action = np.array([vl, vr])
         self.updated = True
-    
+
     def _publish_info(self):
         """
         Publishes a default CameraInfo - TODO: Fix after distortion applied in simulator
@@ -61,7 +61,7 @@ class ROSAgent(object):
         # # TODO - You need to remove this! Triggers random action
         self._TEMPLATE_action_publisher()
 
-        self.cam_info_pub.publish(CameraInfo())      
+        self.cam_info_pub.publish(CameraInfo())
 
     def _publish_img(self, obs):
         """
@@ -76,5 +76,5 @@ class ROSAgent(object):
         img_msg.format = "jpeg"
         contig = cv2.cvtColor(np.ascontiguousarray(obs), cv2.COLOR_BGR2RGB)
         img_msg.data = np.array(cv2.imencode('.jpg', contig)[1]).tostring()
-  
+
         self.cam_pub.publish(img_msg)
