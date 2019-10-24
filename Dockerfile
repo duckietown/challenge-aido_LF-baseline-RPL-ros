@@ -1,7 +1,10 @@
 # Definition of Submission container
 
-# We start from a base ROS image
+FROM duckietown/dt-car-interface:daffy-amd64 AS dt-car-interface
+
 FROM duckietown/dt-core:daffy-amd64
+
+COPY --from=dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface ./${CATKIN_WS_DIR}/src/dt-car-interface
 
 # DO NOT MODIFY: your submission won't run if you do
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
@@ -37,8 +40,17 @@ RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python2.7/dist-packages:$PYT
 # For ROS Agent - pulls the default configuration files 
 # Think of this as the vehicle name
 ENV HOSTNAME=default
+ENV VEHICLE_NAME=default
+ENV ROS_MASTER_URI=http://localhost:11311
+ENV ROS_HOSTNAME=localhost
 
 # let's see what you've got there...
+
+RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
+  catkin build \
+    --workspace ${CATKIN_WS_DIR}/
+
+RUN /bin/bash -c "source ${CATKIN_WS_DIR}/devel/setup.bash"
 
 ENV DISABLE_CONTRACTS=1
 CMD ["python", "solution.py"]
