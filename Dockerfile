@@ -1,8 +1,12 @@
 # Definition of Submission container
 
-FROM duckietown/dt-car-interface:daffy-amd64 AS dt-car-interface
+ARG ARCH=amd64
+ARG MAJOR=daffy
+ARG BASE_TAG=${MAJOR}-${ARCH}
 
-FROM duckietown/dt-core:daffy-amd64
+FROM duckietown/dt-car-interface:${BASE_TAG} AS dt-car-interface
+
+FROM duckietown/dt-core:${BASE_TAG}
 
 COPY --from=dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface ./${CATKIN_WS_DIR}/src/dt-car-interface
 
