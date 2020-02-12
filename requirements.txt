@@ -1,2 +1,2 @@
 zuper-nodes-python2-z5
-cbor2
+cbor2==4.1.2
