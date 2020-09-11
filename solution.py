@@ -1,7 +1,8 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 from __future__ import unicode_literals
 
-from zuper_nodes_python2 import wrap_direct
+from aido_schemas import protocol_agent
+from zuper_nodes_wrapper import wrap_direct
 import os
 import rospy
 import roslaunch
@@ -80,4 +81,4 @@ def jpg2rgb(image_data):
 
 if __name__ == '__main__':
     agent = ROSTemplateAgent()
-    wrap_direct(agent)
+    wrap_direct(agent, protocol_agent)
