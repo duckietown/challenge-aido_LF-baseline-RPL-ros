@@ -18,8 +18,15 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
          bzip2 \
          python3-tk \
          python3-wheel \
-         python3-pip && \
+         python3-pip  \
+         software-properties-common && \
      rm -rf /var/lib/apt/lists/*
+
+# RUN apt-get update -y && \
+#   add-apt-repository ppa:deadsnakes/ppa -y && \
+#   apt-get update -y && \
+#   apt-get install -y python3.7-dev && \
+#   ln -sf /usr/bin/python3.7 /usr/bin/python3
 
 WORKDIR /workspace
 
@@ -29,7 +36,7 @@ COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 
 # For ROS Agent - Need to upgrade Pillow for Old ROS stack
-RUN pip3 install pillow --user --upgrade
+#RUN pip3 install pillow --user --upgrade
 
 # let's copy all our solution files to our workspace
 # if you have more file use the COPY command to move them to the workspace
@@ -39,7 +46,7 @@ COPY solution.py ./
 COPY rosagent.py ./
 COPY template.launch ./
 
-RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python3.8/dist-packages:$PYTHONPATH""
+RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python3.7/dist-packages:$PYTHONPATH""
 
 # For ROS Agent - pulls the default configuration files 
 # Think of this as the vehicle name
