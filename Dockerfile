@@ -25,7 +25,7 @@ WORKDIR /workspace
 
 # here, we install the requirements, some requirements come by default
 # you can add more if you need to in requirements.txt
-COPY requirements.txt .
+COPY requirements.* ./
 RUN pip install -r requirements.txt
 
 # For ROS Agent - Need to upgrade Pillow for Old ROS stack
@@ -41,7 +41,7 @@ COPY template.launch ./
 
 RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python2.7/dist-packages:$PYTHONPATH""
 
-# For ROS Agent - pulls the default configuration files 
+# For ROS Agent - pulls the default configuration files
 # Think of this as the vehicle name
 ENV HOSTNAME=default
 ENV VEHICLE_NAME=default
@@ -56,5 +56,4 @@ RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
 
 RUN /bin/bash -c "source ${CATKIN_WS_DIR}/devel/setup.bash"
 
-ENV DISABLE_CONTRACTS=1
 CMD ["python", "solution.py"]
