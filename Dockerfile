@@ -32,8 +32,14 @@ WORKDIR /workspace
 
 # here, we install the requirements, some requirements come by default
 # you can add more if you need to in requirements.txt
+
+RUN pip install pipdeptree
+RUN pipdeptree
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
+
+RUN pip list
+RUN pipdeptree
 
 # For ROS Agent - Need to upgrade Pillow for Old ROS stack
 #RUN pip3 install pillow --user --upgrade
