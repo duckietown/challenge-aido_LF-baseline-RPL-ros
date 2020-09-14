@@ -33,13 +33,18 @@ WORKDIR /workspace
 # here, we install the requirements, some requirements come by default
 # you can add more if you need to in requirements.txt
 
+# Before installing
+RUN echo PYTHONPATH=$PYTHONPATH
 RUN pip install pipdeptree
 RUN pipdeptree
-COPY requirements.txt .
-RUN pip3 install -r requirements.txt
-
 RUN pip list
+
+COPY requirements.txt .
+RUN pip3 install --use-feature=2020-resolver -r requirements.txt
+
+RUN echo PYTHONPATH=$PYTHONPATH
 RUN pipdeptree
+RUN pip list
 
 # For ROS Agent - Need to upgrade Pillow for Old ROS stack
 #RUN pip3 install pillow --user --upgrade
