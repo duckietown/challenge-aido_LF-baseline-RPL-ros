@@ -11,10 +11,3 @@ build-no-cache:
 
 push: build
 	docker push $(tag)
-
-test-data1-direct:
-	./solution.py < test_data/in1.json > test_data/out1.json
-
-test-data1-docker:
-	docker run -i $(tag) < test_data/in1.json > test_data/out1.json
-

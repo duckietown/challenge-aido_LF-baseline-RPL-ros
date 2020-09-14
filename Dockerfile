@@ -46,22 +46,25 @@ COPY solution.py ./
 COPY rosagent.py ./
 COPY template.launch ./
 
+# XXX: what is this for?
+# envs are not persisted
 RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python3.7/dist-packages:$PYTHONPATH""
 
-# For ROS Agent - pulls the default configuration files 
+# For ROS Agent - pulls the default configuration files
 # Think of this as the vehicle name
 ENV HOSTNAME=default
 ENV VEHICLE_NAME=default
 ENV ROS_MASTER_URI=http://localhost:11311
 ENV ROS_HOSTNAME=localhost
 
-# let's see what you've got there...
-
 RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
   catkin build \
     --workspace ${CATKIN_WS_DIR}/
 
-RUN /bin/bash -c "source ${CATKIN_WS_DIR}/devel/setup.bash"
+
+# Note: here we try to import the solution code
+# so that we can check all of the libraries are imported correctly
+RUN /bin/bash -c "source ${CATKIN_WS_DIR}/devel/setup.bash && python3 -c 'from solution import *'"
 
 ENV DISABLE_CONTRACTS=1
 CMD ["python3", "solution.py"]
