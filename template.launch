@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <launch>
-    <!-- Nothing inside - will just start a ROSMaster -->
+    <!-- start basic args -->
+    <arg name="veh" default="default"/>
+    <arg name="param_file_name" default="default" />
+    <arg name="loc" default="-1"/>
+    <arg name="line_detector_param_file_name" default="$(arg param_file_name)"/>
+
+    <arg name="lane_following" default="true"/>
+    <!-- Start Lane Control -->
+    <group if="$(arg lane_following)">
+
+        <!-- Line Detector -->
+        <remap from="line_detector_node/transform" to="anti_instagram_node/transform"/>
+        <remap from="line_detector_node/corrected_image/compressed" to="camera_node/image/compressed"/>
+        <include file="$(find line_detector)/launch/line_detector_node.launch">
+          <arg name="veh" value="$(arg veh)"/>
+          <!-- NOTE: "line_detector_param_file_name" as special case -->
+          <arg name="param_file_name" value="$(arg line_detector_param_file_name)"/>
+        </include>
+    </group>
 </launch>

@@ -59,14 +59,14 @@ COPY template.launch ./
 
 # XXX: what is this for?
 # envs are not persisted
-RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python3.7/dist-packages:$PYTHONPATH""
+# RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python3.7/dist-packages:$PYTHONPATH""
 
 # For ROS Agent - pulls the default configuration files
 # Think of this as the vehicle name
-ENV HOSTNAME=default
-ENV VEHICLE_NAME=default
-ENV ROS_MASTER_URI=http://localhost:11311
-ENV ROS_HOSTNAME=localhost
+#ENV HOSTNAME=default
+#ENV VEHICLE_NAME=default
+#ENV ROS_MASTER_URI=http://localhost:11311
+#ENV ROS_HOSTNAME=localhost
 
 RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
   catkin build \

@@ -13,16 +13,16 @@ from aido_schemas import protocol_agent, wrap_direct
 
 
 class ROSTemplateAgent:
-    def __init__(self, load_model=False, model_path=None):
+#    def __init__(self, load_model=False, model_path=None):
         # Now, initialize the ROS stuff here:
-        uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-        roslaunch.configure_logging(uuid)
-        roslaunch_path = os.path.join(os.getcwd(), "template.launch")
-        self.launch = roslaunch.parent.ROSLaunchParent(uuid, [roslaunch_path])
-        self.launch.start()
+#        uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+#        roslaunch.configure_logging(uuid)
+#        roslaunch_path = os.path.join(os.getcwd(), "template.launch")
+#        self.launch = roslaunch.parent.ROSLaunchParent(uuid, [roslaunch_path])
+#        self.launch.start()
 
         # Start the ROSAgent, which handles publishing images and subscribing to action
-        self.agent = ROSAgent()
+#        self.agent = ROSAgent()
 
     def init(self, context, data):
         context.info("init()")
