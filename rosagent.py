@@ -67,6 +67,8 @@ class ROSAgent:
         """
         Publishes the image to the compressed_image topic, which triggers the lane following loop
         """
+
+        # XXX: make this into a function (there were a few of these conversions around...)
         img_msg = CompressedImage()
 
         time = rospy.get_rostime()
