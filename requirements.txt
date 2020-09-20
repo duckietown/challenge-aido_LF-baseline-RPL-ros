@@ -1,2 +1,2 @@
 pipdeptree
-aido-protocols-daffy-aido4>=5.0.65
+aido-protocols-daffy
