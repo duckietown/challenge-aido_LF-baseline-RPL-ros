@@ -1,33 +1,33 @@
-import rospy
-from sensor_msgs.msg import CompressedImage, CameraInfo
-from duckietown_msgs.msg import Twist2DStamped, WheelsCmdStamped
-import numpy as np
 import os
+
 import cv2
+import numpy as np
+import rospy
+from duckietown_msgs.msg import WheelsCmdStamped
+from sensor_msgs.msg import CameraInfo, CompressedImage
 
 
-class ROSAgent(object):
+class ROSAgent:
     def __init__(self):
         # Get the vehicle name, which comes in as HOSTNAME
-        self.vehicle = os.getenv('HOSTNAME')
-
-        self.ik_action_sub = rospy.Subscriber('/{}/ik_action_topic'.format(
-            self.vehicle), WheelsCmdStamped, self._ik_action_cb)
+        self.vehicle = os.getenv("HOSTNAME")
+        topic = "/{}/ik_action_topic".format(self.vehicle)
+        self.ik_action_sub = rospy.Subscriber(topic, WheelsCmdStamped, self._ik_action_cb)
         # Place holder for the action, which will be read by the agent in solution.py
         self.action = np.array([0.0, 0.0])
         self.updated = True
 
         # Publishes onto the corrected image topic
         # since image out of simulator is currently rectified
-        self.cam_pub = rospy.Publisher('/{}/image_topic'.format(
-            self.vehicle), CompressedImage, queue_size=10)
+        topic = "/{}/image_topic".format(self.vehicle)
+        self.cam_pub = rospy.Publisher(topic, CompressedImage, queue_size=10)
 
         # Publisher for camera info - needed for the ground_projection
-        self.cam_info_pub = rospy.Publisher('/{}/camera_info_topic'.format(
-            self.vehicle), CameraInfo, queue_size=1)
+        topic = "/{}/camera_info_topic".format(self.vehicle)
+        self.cam_info_pub = rospy.Publisher(topic, CameraInfo, queue_size=1)
 
         # Initializes the node
-        rospy.init_node('ROSTemplate')
+        rospy.init_node("ROSTemplate")
 
         # 15Hz ROS Cycle - TODO: What is this number?
         self.r = rospy.Rate(15)
@@ -67,6 +67,8 @@ class ROSAgent(object):
         """
         Publishes the image to the compressed_image topic, which triggers the lane following loop
         """
+
+        # XXX: make this into a function (there were a few of these conversions around...)
         img_msg = CompressedImage()
 
         time = rospy.get_rostime()
@@ -75,6 +77,6 @@ class ROSAgent(object):
 
         img_msg.format = "jpeg"
         contig = cv2.cvtColor(np.ascontiguousarray(obs), cv2.COLOR_BGR2RGB)
-        img_msg.data = np.array(cv2.imencode('.jpg', contig)[1]).tostring()
+        img_msg.data = np.array(cv2.imencode(".jpg", contig)[1]).tostring()
 
         self.cam_pub.publish(img_msg)
