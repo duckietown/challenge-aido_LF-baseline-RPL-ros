@@ -62,8 +62,7 @@ COPY solution.py ./
 COPY rosagent.py ./
 COPY template.launch ./
 
-# XXX: what is this for?
-# envs are not persisted
+# FIXME: what is this for? envs are not persisted
 RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python3.7/dist-packages:$PYTHONPATH""
 
 # For ROS Agent - pulls the default configuration files
