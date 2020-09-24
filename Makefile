@@ -26,5 +26,5 @@ build-no-cache: update-reqs
 push: build
 	docker push $(tag)
 
-submit-bea:
+submit-bea: update-reqs
 	dts challenges submit --impersonate 1639 --challenge all --retire-same-label
