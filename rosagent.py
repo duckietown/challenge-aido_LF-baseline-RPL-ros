@@ -11,7 +11,7 @@ class ROSAgent:
     def __init__(self):
         # Get the vehicle name, which comes in as HOSTNAME
         self.vehicle = os.getenv("HOSTNAME")
-        topic = "/{}/ik_action_topic".format(self.vehicle)
+        topic = "/{}/wheels_driver_node/wheels_cmd".format(self.vehicle)
         self.ik_action_sub = rospy.Subscriber(topic, WheelsCmdStamped, self._ik_action_cb)
         # Place holder for the action, which will be read by the agent in solution.py
         self.action = np.array([0.0, 0.0])
@@ -45,6 +45,11 @@ class ROSAgent:
         self.action = np.array([vl, vr])
         self.updated = True
 
+    def publish_empty(self):
+        vl = vr = 0
+        self.action = np.array([vl,vr])
+        self.updated = True
+
     def _ik_action_cb(self, msg):
         """
         Callback to listen to last outputted action from inverse_kinematics node
@@ -61,7 +66,11 @@ class ROSAgent:
         """
 
         # # TODO - You need to remove this! Triggers random action
-        self._TEMPLATE_action_publisher()
+        # self._TEMPLATE_action_publisher()
+
+        #tmp fix, publish while waiting for setup
+        if not self.updated:
+            self.publish_empty()
 
         self.cam_info_pub.publish(CameraInfo())
 
