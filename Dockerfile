@@ -6,9 +6,9 @@ ARG BASE_TAG=${MAJOR}-${ARCH}
 
 FROM duckietown/dt-car-interface:${BASE_TAG} AS dt-car-interface
 
-FROM duckietown/dt-core:${BASE_TAG}
+FROM duckietown/dt-core:${BASE_TAG} AS base
 
-COPY --from=dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface ./${CATKIN_WS_DIR}/src/dt-car-interface
+#COPY --from=dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface
 
 # DO NOT MODIFY: your submission won't run if you do
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
@@ -28,7 +28,8 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
 #   apt-get install -y python3.7-dev && \
 #   ln -sf /usr/bin/python3.7 /usr/bin/python3
 
-WORKDIR /workspace
+#WORKDIR /workspace
+WORKDIR /code
 
 # here, we install the requirements, some requirements come by default
 # you can add more if you need to in requirements.txt
@@ -70,7 +71,7 @@ RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python3.7/dist-packages:$PYT
 ENV HOSTNAME=default
 ENV VEHICLE_NAME=default
 ENV ROS_MASTER_URI=http://localhost:11311
-ENV ROS_HOSTNAME=localhost
+#ENV ROS_HOSTNAME=localhost
 
 RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
   catkin build \
