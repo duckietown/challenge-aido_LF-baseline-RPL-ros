@@ -1,26 +1,24 @@
 #!/usr/bin/env python3
 
 import io
-import os
 import time
 
 import numpy as np
-import roslaunch
-from PIL import Image
-
 from aido_schemas import (Context, Duckiebot1Commands, Duckiebot1Observations, EpisodeStart,
                           GetCommands, LEDSCommands, protocol_agent_duckiebot1, PWMCommands, RGB, wrap_direct)
+from PIL import Image
+
 from rosagent import ROSAgent
 
 
 class ROSTemplateAgent:
     def __init__(self):
         # Now, initialize the ROS stuff here:
-        #uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-        #roslaunch.configure_logging(uuid)
-        #roslaunch_path = os.path.join(os.getcwd(), "template.launch")
-        #self.launch = roslaunch.parent.ROSLaunchParent(uuid, [roslaunch_path])
-        #self.launch.start()
+        # uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+        # roslaunch.configure_logging(uuid)
+        # roslaunch_path = os.path.join(os.getcwd(), "template.launch")
+        # self.launch = roslaunch.parent.ROSLaunchParent(uuid, [roslaunch_path])
+        # self.launch.start()
 
         # Start the ROSAgent, which handles publishing images and subscribing to action
         self.agent = ROSAgent()
