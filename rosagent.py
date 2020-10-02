@@ -45,11 +45,6 @@ class ROSAgent:
         self.action = np.array([vl, vr])
         self.updated = True
 
-    def publish_empty(self):
-        vl = vr = 0
-        self.action = np.array([vl,vr])
-        self.updated = True
-
     def _ik_action_cb(self, msg):
         """
         Callback to listen to last outputted action from inverse_kinematics node
@@ -67,10 +62,6 @@ class ROSAgent:
 
         # # TODO - You need to remove this! Triggers random action
         # self._TEMPLATE_action_publisher()
-
-        #tmp fix, publish while waiting for setup
-        if not self.updated:
-            self.publish_empty()
 
         self.cam_info_pub.publish(CameraInfo())
 
