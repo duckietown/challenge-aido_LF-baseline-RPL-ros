@@ -16,6 +16,7 @@ class ROSAgent:
         # Place holder for the action, which will be read by the agent in solution.py
         self.action = np.array([0.0, 0.0])
         self.updated = True
+        self.initialized = False
 
         # Publishes onto the corrected image topic
         # since image out of simulator is currently rectified
@@ -50,6 +51,7 @@ class ROSAgent:
         Callback to listen to last outputted action from inverse_kinematics node
         Stores it and sustains same action until new message published on topic
         """
+        self.initialized = True
         vl = msg.vel_left
         vr = msg.vel_right
         self.action = np.array([vl, vr])

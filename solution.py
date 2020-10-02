@@ -39,14 +39,17 @@ class ROSTemplateAgent:
         self.agent._publish_info()
 
     def on_received_get_commands(self, context: Context, data: GetCommands):
-        # TODO: let's use a queue here. Performance suffers otherwise.
-        # What you should do is: *get the last command*, if available
-        # otherwise, wait for one command.
-        while not self.agent.updated:
-            time.sleep(0.01)
+        if not self.agent.initialized:
+            pwm_left, pwm_right = [0,0]
+        else:
+            # TODO: let's use a queue here. Performance suffers otherwise.
+            # What you should do is: *get the last command*, if available
+            # otherwise, wait for one command.
+            while not self.agent.updated:
+                time.sleep(0.01)
 
-        pwm_left, pwm_right = self.agent.action
-        self.agent.updated = False
+            pwm_left, pwm_right = self.agent.action
+            self.agent.updated = False
 
         grey = RGB(0.5, 0.5, 0.5)
         led_commands = LEDSCommands(grey, grey, grey, grey, grey)
