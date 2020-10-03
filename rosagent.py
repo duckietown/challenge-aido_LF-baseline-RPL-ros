@@ -35,17 +35,6 @@ class ROSAgent:
         # 15Hz ROS Cycle - TODO: What is this number?
         self.r = rospy.Rate(15)
 
-    def _TEMPLATE_action_publisher(self):
-        """
-        TODO: You need to change this!
-        Random action publisher - so your submission does something
-        """
-
-        vl = np.random.random()
-        vr = np.random.random()
-        self.action = np.array([vl, vr])
-        self.updated = True
-
     def _ik_action_cb(self, msg):
         """
         Callback to listen to last outputted action from inverse_kinematics node
@@ -61,10 +50,6 @@ class ROSAgent:
         """
         Publishes a default CameraInfo - TODO: Fix after distortion applied in simulator
         """
-
-        # # TODO - You need to remove this! Triggers random action
-        # self._TEMPLATE_action_publisher()
-
         self.cam_info_pub.publish(CameraInfo())
 
     def _publish_img(self, obs):
