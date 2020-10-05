@@ -16,11 +16,12 @@ from rosagent import ROSAgent
 class ROSTemplateAgent:
     def __init__(self):
         # Now, initialize the ROS stuff here:
-        #uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-        #roslaunch.configure_logging(uuid)
-        #roslaunch_path = os.path.join(os.getcwd(), "template.launch")
-        #self.launch = roslaunch.parent.ROSLaunchParent(uuid, [roslaunch_path])
-        #self.launch.start()
+        """
+        uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+        roslaunch.configure_logging(uuid)
+        roslaunch_path = os.path.join(os.getcwd(), "template.launch")
+        self.launch = roslaunch.parent.ROSLaunchParent(uuid, [roslaunch_path])
+        self.launch.start()"""
 
         # Start the ROSAgent, which handles publishing images and subscribing to action
         self.agent = ROSAgent()
@@ -37,6 +38,9 @@ class ROSTemplateAgent:
     def on_received_observations(self, context: Context, data: Duckiebot1Observations):
         jpg_data = data.camera.jpg_data
         obs = jpg2rgb(jpg_data)
+        self.publish_obs_to_agent(obs)
+
+    def publish_obs_to_agent(self, obs):
         self.agent._publish_img(obs)
         self.agent._publish_info()
 
