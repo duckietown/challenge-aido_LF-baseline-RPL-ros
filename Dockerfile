@@ -8,7 +8,7 @@ FROM duckietown/dt-car-interface:${BASE_TAG} AS dt-car-interface
 
 FROM duckietown/dt-core:${BASE_TAG} AS base
 
-#COPY --from=dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface
+COPY --from=dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface
 
 # DO NOT MODIFY: your submission won't run if you do
 RUN apt-get update -y && apt-get install -y --no-install-recommends \

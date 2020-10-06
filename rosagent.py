@@ -13,8 +13,8 @@ class ROSAgent:
     def __init__(self):
         # Get the vehicle name, which comes in as HOSTNAME
         self.vehicle = os.getenv("HOSTNAME")
-        topic = "/{}/lane_controller_node/car_cmd".format(self.vehicle)
-        self.ik_action_sub = rospy.Subscriber(topic, Twist2DStamped, self._ik_action_cb)
+        topic = "/{}/wheels_driver_node/wheels_cmd".format(self.vehicle)
+        self.ik_action_sub = rospy.Subscriber(topic, WheelsCmdStamped, self._ik_action_cb)
         # Place holder for the action, which will be read by the agent in solution.py
         self.action = np.array([0.0, 0.0])
         self.updated = True
@@ -66,11 +66,9 @@ class ROSAgent:
         Callback to listen to last outputted action from inverse_kinematics node
         Stores it and sustains same action until new message published on topic
         """
-        print("CCCCCCCCCC")
-
         self.initialized = True
-        vl = msg.v
-        vr = msg.omega
+        vl = msg.vel_left
+        vr = msg.vel_right
         self.action = np.array([vl, vr])
         self.updated = True
 
@@ -87,8 +85,6 @@ class ROSAgent:
         """
         Publishes the image to the compressed_image topic, which triggers the lane following loop
         """
-        print("BBBBBBBBBBBB")
-
         # XXX: make this into a function (there were a few of these conversions around...)
         img_msg = CompressedImage()
 

@@ -37,7 +37,6 @@ class ROSTemplateAgent:
     def on_received_observations(self, context: Context, data: Duckiebot1Observations):
         jpg_data = data.camera.jpg_data
         obs = jpg2rgb(jpg_data)
-        print("AAAAAAAAAAAA")
         self.publish_obs_to_agent(obs)
 
     def publish_obs_to_agent(self, obs):
