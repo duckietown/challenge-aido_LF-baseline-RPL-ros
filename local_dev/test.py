@@ -1,4 +1,6 @@
 #agent = ROSTemplateAgent()
+import time
+
 from env import launch_env
 import rospy
 from solution import ROSTemplateAgent
@@ -7,6 +9,8 @@ env = launch_env()
 
 template = ROSTemplateAgent()
 done = True
+
+
 while not rospy.is_shutdown():
     if done:
         obs = env.reset()
