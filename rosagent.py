@@ -31,7 +31,9 @@ class ROSAgent:
         topic = "/{}/camera_node/camera_info".format(self.vehicle)
         self.cam_info_pub = rospy.Publisher(topic, CameraInfo, queue_size=1)
 
-        # For intrinsic calibration
+        # copied from camera driver:
+
+
         self.cali_file_folder = '/data/config/calibrations/camera_intrinsic/'
         self.frame_id = rospy.get_namespace().strip('/') + '/camera_optical_frame'
         self.cali_file = self.cali_file_folder + rospy.get_namespace().strip("/") + ".yaml"
@@ -82,6 +84,7 @@ class ROSAgent:
         """
         Publishes the image to the compressed_image topic, which triggers the lane following loop
         """
+
         # XXX: make this into a function (there were a few of these conversions around...)
         img_msg = CompressedImage()
 
