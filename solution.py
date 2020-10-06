@@ -9,16 +9,18 @@ from aido_schemas import (Context, Duckiebot1Commands, Duckiebot1Observations, E
 from PIL import Image
 
 from rosagent import ROSAgent
-
+import roslaunch
+import os
 
 class ROSTemplateAgent:
     def __init__(self):
+
         # Now, initialize the ROS stuff here:
-        # uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-        # roslaunch.configure_logging(uuid)
-        # roslaunch_path = os.path.join(os.getcwd(), "template.launch")
-        # self.launch = roslaunch.parent.ROSLaunchParent(uuid, [roslaunch_path])
-        # self.launch.start()
+        uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+        roslaunch.configure_logging(uuid)
+        roslaunch_path = os.path.join(os.getcwd(), "template.launch")
+        self.launch = roslaunch.parent.ROSLaunchParent(uuid, [roslaunch_path])
+        self.launch.start()
 
         # Start the ROSAgent, which handles publishing images and subscribing to action
         self.agent = ROSAgent()
