@@ -33,6 +33,7 @@ class ROSAgent:
 
         # copied from camera driver:
 
+
         # For intrinsic calibration
         self.cali_file_folder = '/data/config/calibrations/camera_intrinsic/'
         self.frame_id = rospy.get_namespace().strip('/') + '/camera_optical_frame'
