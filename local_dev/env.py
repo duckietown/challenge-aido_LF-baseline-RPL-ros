@@ -4,8 +4,9 @@ import gym_duckietown
 def launch_env(id=None):
     env = None
     if id is None:
+        from gym_duckietown.envs.duckietown_env import DuckietownLF
         from gym_duckietown.simulator import Simulator
-        env = Simulator(
+        env = DuckietownLF(
             seed=123, # random seed
             map_name="loop_empty",
             max_steps=500001, # we don't want the gym to reset itself

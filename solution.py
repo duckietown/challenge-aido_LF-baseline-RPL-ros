@@ -1,27 +1,26 @@
 #!/usr/bin/env python3
 
 import io
-import os
 import time
 
 import numpy as np
-import roslaunch
-from PIL import Image
-
 from aido_schemas import (Context, Duckiebot1Commands, Duckiebot1Observations, EpisodeStart,
                           GetCommands, LEDSCommands, protocol_agent_duckiebot1, PWMCommands, RGB, wrap_direct)
-from rosagent import ROSAgent
+from PIL import Image
 
+from rosagent import ROSAgent
+import roslaunch
+import os
 
 class ROSTemplateAgent:
     def __init__(self):
+
         # Now, initialize the ROS stuff here:
-        """
         uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
         roslaunch.configure_logging(uuid)
         roslaunch_path = os.path.join(os.getcwd(), "template.launch")
         self.launch = roslaunch.parent.ROSLaunchParent(uuid, [roslaunch_path])
-        self.launch.start()"""
+        self.launch.start()
 
         # Start the ROSAgent, which handles publishing images and subscribing to action
         self.agent = ROSAgent()
@@ -38,6 +37,7 @@ class ROSTemplateAgent:
     def on_received_observations(self, context: Context, data: Duckiebot1Observations):
         jpg_data = data.camera.jpg_data
         obs = jpg2rgb(jpg_data)
+        print("AAAAAAAAAAAA")
         self.publish_obs_to_agent(obs)
 
     def publish_obs_to_agent(self, obs):
@@ -45,14 +45,17 @@ class ROSTemplateAgent:
         self.agent._publish_info()
 
     def on_received_get_commands(self, context: Context, data: GetCommands):
-        # TODO: let's use a queue here. Performance suffers otherwise.
-        # What you should do is: *get the last command*, if available
-        # otherwise, wait for one command.
-        while not self.agent.updated:
-            time.sleep(0.01)
+        if not self.agent.initialized:
+            pwm_left, pwm_right = [0,0]
+        else:
+            # TODO: let's use a queue here. Performance suffers otherwise.
+            # What you should do is: *get the last command*, if available
+            # otherwise, wait for one command.
+            while not self.agent.updated:
+                time.sleep(0.01)
 
-        pwm_left, pwm_right = self.agent.action
-        self.agent.updated = False
+            pwm_left, pwm_right = self.agent.action
+            self.agent.updated = False
 
         grey = RGB(0.5, 0.5, 0.5)
         led_commands = LEDSCommands(grey, grey, grey, grey, grey)

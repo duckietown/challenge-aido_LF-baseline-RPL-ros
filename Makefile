@@ -8,7 +8,8 @@ build_options=\
 	$(shell aido-labels)
 
 
-repo=challenge-aido_lf-template-ros
+repo0=$(shell basename -s .git `git config --get remote.origin.url`)
+repo=$(shell echo $(repo0) | tr A-Z a-z)
 branch=$(shell git rev-parse --abbrev-ref HEAD)
 arch=amd64
 branch=daffy

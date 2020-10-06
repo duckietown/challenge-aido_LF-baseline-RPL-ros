@@ -14,3 +14,6 @@ To actually run this docker with visuals, one must pipe the host's display and d
 `
 
 This is not needed for a train loop, however, and the train loop shouldn't call `env.render()`
+
+TEMP:
+

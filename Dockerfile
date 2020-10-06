@@ -31,6 +31,10 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
 #WORKDIR /workspace
 WORKDIR /code
 
+RUN mkdir -p /data/config
+RUN git clone https://github.com/duckietown/duckiefleet.git /data/config
+
+
 # here, we install the requirements, some requirements come by default
 # you can add more if you need to in requirements.txt
 
