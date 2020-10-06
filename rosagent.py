@@ -5,7 +5,7 @@ import numpy as np
 import yaml
 import copy
 import rospy
-from duckietown_msgs.msg import WheelsCmdStamped, SegmentList, Twist2DStamped
+from duckietown_msgs.msg import WheelsCmdStamped
 from sensor_msgs.msg import CameraInfo, CompressedImage
 
 
@@ -30,9 +30,6 @@ class ROSAgent:
         #topic = "/{}/camera_info_topic".format(self.vehicle)
         topic = "/{}/camera_node/camera_info".format(self.vehicle)
         self.cam_info_pub = rospy.Publisher(topic, CameraInfo, queue_size=1)
-
-        topic = "/{}/debug/segments/compressed".format(self.vehicle)
-        self.ik_action_sub = rospy.Subscriber(topic, SegmentList, lambda x: print("OH"))
 
         # For intrinsic calibration
         self.cali_file_folder = '/data/config/calibrations/camera_intrinsic/'
