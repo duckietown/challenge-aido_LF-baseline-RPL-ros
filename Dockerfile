@@ -8,7 +8,7 @@ FROM duckietown/dt-car-interface:${BASE_TAG} AS dt-car-interface
 
 FROM duckietown/dt-core:${BASE_TAG} AS base
 
-#COPY --from=dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface
+COPY --from=dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface
 
 # DO NOT MODIFY: your submission won't run if you do
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
@@ -32,6 +32,7 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
 WORKDIR /code
 
 RUN mkdir -p /data/config
+# TODO this is just for the default.yamls - these should really be taken from init_sd_card
 RUN git clone https://github.com/duckietown/duckiefleet.git /data/config
 
 
@@ -72,12 +73,6 @@ COPY template.launch ./
 # FIXME: what is this for? envs are not persisted
 RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python3.7/dist-packages:$PYTHONPATH""
 
-# For ROS Agent - pulls the default configuration files
-# Think of this as the vehicle name
-ENV HOSTNAME=default
-ENV VEHICLE_NAME=default
-ENV ROS_MASTER_URI=http://localhost:11311
-#ENV ROS_HOSTNAME=localhost
 
 RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
   catkin build \
@@ -89,4 +84,4 @@ RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
 RUN /bin/bash -c "source ${CATKIN_WS_DIR}/devel/setup.bash && python3 -c 'from solution import *'"
 
 ENV DISABLE_CONTRACTS=1
-CMD ["python3", "solution.py"]
+CMD ["python3", "run_and_start.sh"]
