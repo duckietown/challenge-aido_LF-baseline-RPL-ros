@@ -12,7 +12,7 @@ from sensor_msgs.msg import CameraInfo, CompressedImage
 class ROSAgent:
     def __init__(self):
         # Get the vehicle name, which comes in as HOSTNAME
-        self.vehicle = os.getenv("HOSTNAME")
+        self.vehicle = os.getenv("VEHICLE_NAME")
         topic = "/{}/wheels_driver_node/wheels_cmd".format(self.vehicle)
         self.ik_action_sub = rospy.Subscriber(topic, WheelsCmdStamped, self._ik_action_cb)
         # Place holder for the action, which will be read by the agent in solution.py
