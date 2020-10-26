@@ -1,3 +1,4 @@
+
 import os
 
 import cv2
@@ -12,7 +13,7 @@ from sensor_msgs.msg import CameraInfo, CompressedImage
 class ROSAgent:
     def __init__(self):
         # Get the vehicle name, which comes in as HOSTNAME
-        self.vehicle = os.getenv("HOSTNAME")
+        self.vehicle = os.getenv("VEHICLE_NAME")
         topic = "/{}/wheels_driver_node/wheels_cmd".format(self.vehicle)
         self.ik_action_sub = rospy.Subscriber(topic, WheelsCmdStamped, self._ik_action_cb)
         # Place holder for the action, which will be read by the agent in solution.py
@@ -30,6 +31,8 @@ class ROSAgent:
         #topic = "/{}/camera_info_topic".format(self.vehicle)
         topic = "/{}/camera_node/camera_info".format(self.vehicle)
         self.cam_info_pub = rospy.Publisher(topic, CameraInfo, queue_size=1)
+
+        # copied from camera driver:
 
 
         # For intrinsic calibration
@@ -83,6 +86,7 @@ class ROSAgent:
         """
         Publishes the image to the compressed_image topic, which triggers the lane following loop
         """
+
         # XXX: make this into a function (there were a few of these conversions around...)
         img_msg = CompressedImage()
 
@@ -99,15 +103,11 @@ class ROSAgent:
     @staticmethod
     def load_camera_info(filename):
         """Loads the camera calibration files.
-
         Loads the intrinsic and extrinsic camera matrices.
-
         Args:
             filename (:obj:`str`): filename of calibration files.
-
         Returns:
             :obj:`CameraInfo`: a CameraInfo message object
-
         """
         with open(filename, 'r') as stream:
             calib_data = yaml.load(stream)
