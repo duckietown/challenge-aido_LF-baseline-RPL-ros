@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>random_action</name>
+  <name>base_master</name>
   <version>0.0.0</version>
-  <description>The random_action package</description>
+  <description>The base_master package contains the basic launchfile for the RPL baseline (the lane following demo)</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->

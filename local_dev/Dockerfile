@@ -22,4 +22,4 @@ COPY _setup .
 COPY . .
 RUN rm -rf _setup && rm Dockerfile
 
-CMD ["python3", "entrypoint.py", "--test", "0"]
+CMD ["python3", "entrypoint.py", "--test", "1"]

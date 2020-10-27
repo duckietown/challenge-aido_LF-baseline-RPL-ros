@@ -9,6 +9,8 @@ import rospy
 from duckietown_msgs.msg import WheelsCmdStamped
 from sensor_msgs.msg import CameraInfo, CompressedImage
 
+from rl_agent.ddpg import DDPG
+
 
 class ROSAgent:
     def __init__(self):
@@ -20,6 +22,7 @@ class ROSAgent:
         self.action = np.array([0.0, 0.0])
         self.updated = True
         self.initialized = False
+        self.latest_obs = None
 
         # Publishes onto the corrected image topic
         # since image out of simulator is currently rectified
@@ -55,6 +58,12 @@ class ROSAgent:
         self.current_camera_info = copy.deepcopy(self.original_camera_info)
         rospy.loginfo("Using calibration file: %s" % self.cali_file)
 
+        class FakePolicy:
+            def predict(self, obs):
+                return np.array([0,0])
+
+        self.rl_policy = FakePolicy()
+
 
         # Initializes the node
         rospy.init_node("ROSTemplate")
@@ -62,15 +71,20 @@ class ROSAgent:
         # 15Hz ROS Cycle - TODO: What is this number?
         self.r = rospy.Rate(15)
 
+    def init_policy(self):
+        self.rl_policy = DDPG()
+
     def _ik_action_cb(self, msg):
         """
         Callback to listen to last outputted action from inverse_kinematics node
-        Stores it and sustains same action until new message published on topic
+        Stores it and sustains same action until new message published on topic.
+
+        Additionally, query our rl rectifier and correct our action.
         """
         self.initialized = True
         vl = msg.vel_left
         vr = msg.vel_right
-        self.action = np.array([vl, vr])
+        self.action = np.array([vl, vr]) + self.rl_policy.predict(self.latest_obs)
         self.updated = True
 
     def _publish_info(self):
@@ -98,6 +112,7 @@ class ROSAgent:
         contig = cv2.cvtColor(np.ascontiguousarray(obs), cv2.COLOR_BGR2RGB)
         img_msg.data = np.array(cv2.imencode(".jpg", contig)[1]).tostring()
 
+        self.latest_obs = obs
         self.cam_pub.publish(img_msg)
 
     @staticmethod

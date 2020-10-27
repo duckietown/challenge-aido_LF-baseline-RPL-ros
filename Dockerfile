@@ -4,7 +4,12 @@ ARG ARCH=amd64
 ARG MAJOR=daffy
 ARG BASE_TAG=${MAJOR}-${ARCH}
 
-FROM duckietown/dt-ros-commons:${BASE_TAG}
+# MERGE NOTE: DONT CHANGE ANYTHING UNTIL END OF MERGE NOTE
+FROM duckietown/dt-car-interface:${BASE_TAG} AS dt-car-interface
+FROM duckietown/dt-core:${BASE_TAG}
+COPY --from=dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface
+# END MERGE NOTE
+
 WORKDIR /code
 
 
@@ -63,6 +68,8 @@ RUN mkdir /code/submission_ws
 COPY submission_ws/src /code/submission_ws/src
 COPY launchers /code
 
+COPY rl_agent rl_agent
+
 # let's copy all our solution files to our workspace
 # if you have more file use the COPY command to move them to the workspace
 COPY solution.py ./
@@ -80,6 +87,7 @@ ENV ROS_MASTER_URI=http://localhost:11311
 
 RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
     . ${CATKIN_WS_DIR}/devel/setup.bash  && \
+    catkin build --workspace /code/catkin_ws && \
     catkin build --workspace /code/submission_ws
 
 

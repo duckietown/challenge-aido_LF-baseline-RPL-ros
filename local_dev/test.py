@@ -17,7 +17,9 @@ while not rospy.is_shutdown():
         template.obs_to_agent(obs)
         template.agent.r.sleep()
 
-    obs, rew, done, _ = env.step(template.agent.action)
+    action = template.agent.action
+    print(action)
+    obs, rew, done, _ = env.step(action)
     env.render()
     template.obs_to_agent(obs)
     template.agent.r.sleep()
