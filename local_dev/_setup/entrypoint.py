@@ -27,8 +27,9 @@ print(parsed)
 
 if get_parser().parse_args().test:
     os.environ["SOLUTION_TEST"] = "1"
-    print("\n\n\n\n\n\n\n\nAHHHHHHHHHH")
+    print("\n\n\n\n\n\n\n\nTESTING\n\n\n\n\n\n\n\n")
     import test
 else:
+    print("\n\n\n\n\n\n\n\nTRAINING\n\n\n\n\n\n\n\n")
     os.environ["SOLUTION_TEST"] = "0"
     import train

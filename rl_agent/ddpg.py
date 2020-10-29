@@ -10,6 +10,9 @@ from .object_wrappers import imgWrapper
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+class FakeWriter:
+    def add_scalar(self, *args):
+        pass
 
 # Implementation of Deep Deterministic Policy Gradients (DDPG)
 # Paper: https://arxiv.org/abs/1509.02971
@@ -48,7 +51,7 @@ class ActorCNN(nn.Module):
         x = self.bn2(self.lr(self.conv2(x)))
         x = self.bn3(self.lr(self.conv3(x)))
         x = self.bn4(self.lr(self.conv4(x)))
-        x = x.view(x.size(0), -1)  # flatten
+        x = x.reshape(x.size(0), -1)  # flatten
         # x = self.dropout(x)
         x = self.lr(self.lin1(x))
 
@@ -95,7 +98,7 @@ class CriticCNN(nn.Module):
         x = self.bn2(self.lr(self.conv2(x)))
         x = self.bn3(self.lr(self.conv3(x)))
         x = self.bn4(self.lr(self.conv4(x)))
-        x = x.view(x.size(0), -1)  # flatten
+        x = x.reshape(x.size(0), -1)  # flatten
         x = self.lr(self.lin1(x))
         x = self.lr(self.lin2(torch.cat([x, actions], 1)))  # c
         x = self.lin3(x)
@@ -104,11 +107,10 @@ class CriticCNN(nn.Module):
 
 
 class DDPG(object):
-    def __init__(self, state_dim=(480, 640, 3), action_dim=2, max_action=1.0, net_type="cnn", critic_chkp=None, writer=None):
+    def __init__(self, action_dim=2, max_action=1.0, net_type="cnn", critic_chkp=None, writer=FakeWriter()):
         super(DDPG, self).__init__()
         assert net_type in ["cnn", "pid"]
 
-        self.state_dim = state_dim
         self.flat = False
         self.actor = ActorCNN(action_dim, max_action).to(device)
         self.actor_target = ActorCNN(action_dim, max_action).to(device)

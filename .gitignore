@@ -1,2 +1,3 @@
 output-local-evaluation
 requirements.resolved
+*.pth

@@ -1,5 +1,6 @@
 
 import os
+import threading
 
 import cv2
 import numpy as np
@@ -8,12 +9,16 @@ import copy
 import rospy
 from duckietown_msgs.msg import WheelsCmdStamped
 from sensor_msgs.msg import CameraInfo, CompressedImage
+from std_msgs.msg import Bool
+
 
 from rl_agent.ddpg import DDPG
 
+MODEL_DIR = "./rl_agent/weights"
+MODEL_NAME = "DDPG_123"
 
 class ROSAgent:
-    def __init__(self):
+    def __init__(self, dont_init_rl=False):
         # Get the vehicle name, which comes in as HOSTNAME
         self.vehicle = os.getenv("VEHICLE_NAME")
         topic = "/{}/wheels_driver_node/wheels_cmd".format(self.vehicle)
@@ -58,21 +63,20 @@ class ROSAgent:
         self.current_camera_info = copy.deepcopy(self.original_camera_info)
         rospy.loginfo("Using calibration file: %s" % self.cali_file)
 
-        class FakePolicy:
-            def predict(self, obs):
-                return np.array([0,0])
+        self.rl_policy = DDPG()
+        if not dont_init_rl:
+            try:
+                self.rl_policy.load(MODEL_NAME, MODEL_DIR)
+            except:
+                print("Weights for RL policy not found. Using standard initialization.")
 
-        self.rl_policy = FakePolicy()
-
+        #self.callback_pub = rospy.Publisher("wheel_callback_event", Bool, queue_size=1)
 
         # Initializes the node
         rospy.init_node("ROSTemplate")
 
         # 15Hz ROS Cycle - TODO: What is this number?
         self.r = rospy.Rate(15)
-
-    def init_policy(self):
-        self.rl_policy = DDPG()
 
     def _ik_action_cb(self, msg):
         """
@@ -84,8 +88,12 @@ class ROSAgent:
         self.initialized = True
         vl = msg.vel_left
         vr = msg.vel_right
-        self.action = np.array([vl, vr]) + self.rl_policy.predict(self.latest_obs)
+        self.rl_action = self.rl_policy.predict(self.latest_obs)
+        self.action = np.array([vl, vr]) + self.rl_action
         self.updated = True
+        self.callback_processed = True
+
+        #self.callback_pub.publish(True)
 
     def _publish_info(self):
         """
@@ -96,9 +104,12 @@ class ROSAgent:
         self.current_camera_info.header.stamp = stamp
         self.cam_info_pub.publish(self.current_camera_info)
 
-    def _publish_img(self, obs):
+    def _publish_img(self, obs, wait_for_callback=False):
         """
         Publishes the image to the compressed_image topic, which triggers the lane following loop
+
+        For training: if wait_for_callback is true, we'll also publish the camera info, and then wait until the action
+        has been calculated
         """
 
         # XXX: make this into a function (there were a few of these conversions around...)
@@ -112,8 +123,21 @@ class ROSAgent:
         contig = cv2.cvtColor(np.ascontiguousarray(obs), cv2.COLOR_BGR2RGB)
         img_msg.data = np.array(cv2.imencode(".jpg", contig)[1]).tostring()
 
+        self.callback_processed = False
         self.latest_obs = obs
         self.cam_pub.publish(img_msg)
+
+        if wait_for_callback:
+            self.r = rospy.Rate(1000)
+            self._publish_info()
+            while not self.callback_processed:
+                from time import sleep
+                sleep(0.0001)   # TODO if you, yes YOU!, dear coder, have a better idea to synchronize the callback
+                # and the action calculation, please let us know.
+                #try:
+                #    rospy.wait_for_message("wheel_callback_event", Bool, timeout=1)
+                #except ROSException as e:
+                #    pass
 
     @staticmethod
     def load_camera_info(filename):
