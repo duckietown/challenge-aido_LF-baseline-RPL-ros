@@ -1,3 +1,4 @@
 output-local-evaluation
 requirements.resolved
 *.pth
+events.out.*
