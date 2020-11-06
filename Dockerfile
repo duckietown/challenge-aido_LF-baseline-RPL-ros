@@ -50,6 +50,9 @@ ARG PIP_INDEX_URL
 ENV PIP_INDEX_URL=${PIP_INDEX_URL}
 RUN echo PIP_INDEX_URL=${PIP_INDEX_URL}
 
+COPY requirements.pin.txt ./
+RUN pip3 install --use-feature=2020-resolver -r requirements.pin.txt -f https://download.pytorch.org/whl/torch_stable.html
+
 COPY requirements.* ./
 RUN cat requirements.* > .requirements.txt
 RUN  pip3 install --use-feature=2020-resolver -r .requirements.txt
@@ -58,6 +61,8 @@ RUN  pip3 install --use-feature=2020-resolver -r .requirements.txt
 RUN echo PYTHONPATH=$PYTHONPATH
 RUN pipdeptree
 RUN pip list
+
+RUN pip3 uninstall -y dataclasses
 
 # For ROS Agent - Need to upgrade Pillow for Old ROS stack
 #RUN pip3 install pillow --user --upgrade

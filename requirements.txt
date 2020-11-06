@@ -1,4 +1,2 @@
-pipdeptree
+
 aido-protocols-daffy
-torch
-tensorboardX
