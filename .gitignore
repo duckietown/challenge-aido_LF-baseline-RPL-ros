@@ -1,4 +1,4 @@
 output-local-evaluation
 requirements.resolved
 *.pth
-events.out.*
+local_dev/tensorboard/events.out.*
