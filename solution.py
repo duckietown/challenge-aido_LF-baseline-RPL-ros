@@ -9,7 +9,8 @@ from aido_schemas import (Context, Duckiebot1Commands, Duckiebot1Observations, E
 from PIL import Image
 
 from rosagent import ROSAgent
-
+import torch
+import os
 
 class ROSTemplateAgent:
     def __init__(self):
@@ -21,10 +22,28 @@ class ROSTemplateAgent:
         # self.launch.start()
 
         # Start the ROSAgent, which handles publishing images and subscribing to action
-        self.agent = ROSAgent()
+        pass
 
     def init(self, context: Context):
         context.info("init()")
+        self.check_gpu_available(context)
+        self.agent = ROSAgent()
+
+    def check_gpu_available(self, context: Context):
+        available = torch.cuda.is_available()
+        req = os.environ.get('AIDO_REQUIRE_GPU', None)
+        context.info(f'torch.cuda.is_available = {available!r} AIDO_REQUIRE_GPU = {req!r}')
+        context.info('init()')
+        if available:
+            i = torch.cuda.current_device()
+            count = torch.cuda.device_count()
+            name = torch.cuda.get_device_name(i)
+            context.info(f'device {i} of {count}; name = {name!r}')
+        else:
+            if req is not None:
+                msg = 'I need a GPU; bailing.'
+                context.error(msg)
+                raise Exception(msg)
 
     def on_received_seed(self, context: Context, data: int):
         np.random.seed(data)
