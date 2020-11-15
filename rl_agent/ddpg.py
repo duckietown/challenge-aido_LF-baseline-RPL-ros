@@ -8,6 +8,10 @@ import torch.nn.functional as F
 
 from .object_wrappers import imgWrapper
 
+if not torch.cuda.is_available():
+    print("BAILING BECAUSE CUDA IS NOT AVAILABLE")
+    raise Exception("BAILING BECAUSE CUDA IS NOT AVAILABLE")
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class FakeWriter:

@@ -2,7 +2,7 @@
 #  - aido2-LF-sim-testing
 
 protocol: aido2_db18_agent-z2
-user-label: "template-ros"
+user-label: "template-rpl-ros"
 user-payload: {}
 description: |
-    This is a simple random agent that operates through ROS
+    This is a RPL agent built over ROS+torch

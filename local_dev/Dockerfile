@@ -22,4 +22,6 @@ COPY _setup .
 COPY . .
 RUN rm -rf _setup && rm Dockerfile
 
+RUN pip3 uninstall dataclasses -y
+
 CMD ["python3", "entrypoint.py"]
