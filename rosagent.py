@@ -12,7 +12,6 @@ from sensor_msgs.msg import CameraInfo, CompressedImage
 from std_msgs.msg import Bool
 
 
-from rl_agent.ddpg import DDPG
 
 MODEL_DIR = "./rl_agent/weights"
 MODEL_NAME = "DDPG_123"
@@ -63,6 +62,8 @@ class ROSAgent:
         self.current_camera_info = copy.deepcopy(self.original_camera_info)
         rospy.loginfo("Using calibration file: %s" % self.cali_file)
 
+
+        from rl_agent.ddpg import DDPG
         self.rl_policy = DDPG()
         if not dont_init_rl:
             try:
