@@ -3,12 +3,20 @@
 ARG ARCH=amd64
 ARG MAJOR=daffy
 ARG BASE_TAG=${MAJOR}-${ARCH}
+ARG AIDO_REGISTRY=docker.io
 
-# MERGE NOTE: DONT CHANGE ANYTHING UNTIL END OF MERGE NOTE
-FROM duckietown/dt-car-interface:${BASE_TAG} AS dt-car-interface
-FROM duckietown/dt-core:${BASE_TAG}
+FROM ${AIDO_REGISTRY}/duckietown/dt-car-interface:${BASE_TAG} AS dt-car-interface
+
+FROM ${AIDO_REGISTRY}/duckietown/challenge-aido_lf-template-ros:${BASE_TAG} AS template
+
+FROM ${AIDO_REGISTRY}/duckietown/dt-core:${BASE_TAG} AS base
+
+WORKDIR /code
+
 COPY --from=dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface
-# END MERGE NOTE
+
+COPY --from=template /data/config /data/config
+COPY --from=template /code/rosagent.py .
 
 WORKDIR /code
 

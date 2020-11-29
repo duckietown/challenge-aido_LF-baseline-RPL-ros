@@ -4,9 +4,18 @@ import io
 import time
 
 import numpy as np
-from aido_schemas import (Context, Duckiebot1Commands, Duckiebot1Observations, EpisodeStart,
-                          GetCommands, LEDSCommands, protocol_agent_duckiebot1, PWMCommands, RGB, wrap_direct)
-from PIL import Image
+from aido_schemas import (
+    Context,
+    DB20Commands,
+    DB20Observations,
+    EpisodeStart,
+    GetCommands,
+    LEDSCommands,
+    protocol_agent_DB20,
+    PWMCommands,
+    RGB,
+    wrap_direct,
+)from PIL import Image
 
 from rosagent import ROSAgent
 import torch
@@ -14,14 +23,6 @@ import os
 
 class ROSTemplateAgent:
     def __init__(self):
-        # Now, initialize the ROS stuff here:
-        # uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-        # roslaunch.configure_logging(uuid)
-        # roslaunch_path = os.path.join(os.getcwd(), "template.launch")
-        # self.launch = roslaunch.parent.ROSLaunchParent(uuid, [roslaunch_path])
-        # self.launch.start()
-
-        # Start the ROSAgent, which handles publishing images and subscribing to action
         pass
 
     def init(self, context: Context):
@@ -51,10 +52,20 @@ class ROSTemplateAgent:
     def on_received_episode_start(self, context: Context, data: EpisodeStart):
         context.info("Starting episode %s." % data)
 
-    def on_received_observations(self, context: Context, data: Duckiebot1Observations):
+    def on_received_observations(self, context: Context, data: DB20Observations):
         jpg_data = data.camera.jpg_data
         obs = jpg2rgb(jpg_data)
-        self.obs_to_agent(obs)
+        # noinspection PyProtectedMember
+        self.agent._publish_img(obs)
+        # noinspection PyProtectedMember
+        self.agent._publish_info()
+
+        odometry = data.odometry
+        self.agent._publish_odometry(
+            odometry.resolution_rad,
+            odometry.axis_left_rad,
+            odometry.axis_right_rad
+        )
 
     def obs_to_agent(self, obs):
         self.agent._publish_img(obs)
@@ -76,7 +87,7 @@ class ROSTemplateAgent:
         grey = RGB(0.5, 0.5, 0.5)
         led_commands = LEDSCommands(grey, grey, grey, grey, grey)
         pwm_commands = PWMCommands(motor_left=pwm_left, motor_right=pwm_right)
-        commands = Duckiebot1Commands(pwm_commands, led_commands)
+        commands = DB20Commands(pwm_commands, led_commands)
 
         context.write("commands", commands)
 
@@ -96,4 +107,5 @@ def jpg2rgb(image_data):
 
 if __name__ == "__main__":
     agent = ROSTemplateAgent()
-    wrap_direct(agent, protocol_agent_duckiebot1)
+    protocol = protocol_agent_DB20
+    wrap_direct(node=agent, protocol=protocol)
