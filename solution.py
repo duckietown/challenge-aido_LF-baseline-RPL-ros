@@ -15,7 +15,9 @@ from aido_schemas import (
     PWMCommands,
     RGB,
     wrap_direct,
-)from PIL import Image
+)
+
+from PIL import Image
 
 from rosagent import ROSAgent
 import torch
@@ -44,7 +46,7 @@ class ROSTemplateAgent:
             if req is not None:
                 msg = 'I need a GPU; bailing.'
                 context.error(msg)
-                raise Exception(msg)
+                raise RuntimeError(msg)
 
     def on_received_seed(self, context: Context, data: int):
         np.random.seed(data)
