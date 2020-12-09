@@ -1,6 +1,6 @@
 # Definition of Submission container
 
-ARG ARCH=amd64
+ARG ARCH=arm64v8
 ARG MAJOR=daffy
 ARG BASE_TAG=${MAJOR}-${ARCH}
 ARG AIDO_REGISTRY=docker.io
@@ -56,11 +56,13 @@ ENV PIP_INDEX_URL=${PIP_INDEX_URL}
 RUN echo PIP_INDEX_URL=${PIP_INDEX_URL}
 
 COPY requirements.pin.txt ./
-RUN pip3 install --use-feature=2020-resolver -r requirements.pin.txt -f https://download.pytorch.org/whl/torch_stable.html
+COPY build_on_nano.sh ./
+RUN if [ "ARCH" = "amd64" ] ; then pip3 install --use-feature=2020-resolver -r requirements.pin.txt -f https://download.pytorch.org/whl/torch_stable.html ; else ./build_on_nano.sh ; fi
+
 
 COPY requirements.* ./
-RUN cat requirements.* > .requirements.txt
-RUN  pip3 install --use-feature=2020-resolver -r .requirements.txt
+# RUN cat requirements.* > .requirements.txt
+RUN  pip3 install --use-feature=2020-resolver -r requirements.txt
 
 RUN pip3 uninstall dataclasses -y
 
