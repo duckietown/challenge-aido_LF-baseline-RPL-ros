@@ -43,9 +43,6 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
 #   ln -sf /usr/bin/python3.7 /usr/bin/python3
 
 
-RUN mkdir -p /data/config
-# TODO this is just for the default.yamls - these should really be taken from init_sd_card
-RUN git clone https://github.com/duckietown/duckiefleet.git /data/config
 
 # Before installing
 RUN echo PYTHONPATH=$PYTHONPATH
@@ -87,12 +84,6 @@ COPY rl_agent rl_agent
 # let's copy all our solution files to our workspace
 # if you have more file use the COPY command to move them to the workspace
 COPY solution.py ./
-
-# For ROS Agent - Additional Files
-COPY rosagent.py ./
-
-# FIXME: what is this for? envs are not persisted
-RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python3.7/dist-packages:$PYTHONPATH""
 
 ENV HOSTNAME=agent
 ENV VEHICLE_NAME=agent

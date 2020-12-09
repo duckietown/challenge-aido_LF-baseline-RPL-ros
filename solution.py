@@ -15,7 +15,8 @@ from aido_schemas import (
     PWMCommands,
     RGB,
     wrap_direct,
-)from PIL import Image
+)
+from PIL import Image
 
 from rosagent import ROSAgent
 import torch
