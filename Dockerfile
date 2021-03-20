@@ -1,6 +1,6 @@
 # Definition of Submission container
 
-ARG ARCH=amd64
+ARG ARCH=arm64v8
 ARG MAJOR=daffy
 ARG BASE_TAG=${MAJOR}-${ARCH}
 ARG AIDO_REGISTRY=docker.io
@@ -43,9 +43,6 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
 #   ln -sf /usr/bin/python3.7 /usr/bin/python3
 
 
-RUN mkdir -p /data/config
-# TODO this is just for the default.yamls - these should really be taken from init_sd_card
-RUN git clone https://github.com/duckietown/duckiefleet.git /data/config
 
 # Before installing
 RUN echo PYTHONPATH=$PYTHONPATH
@@ -59,11 +56,13 @@ ENV PIP_INDEX_URL=${PIP_INDEX_URL}
 RUN echo PIP_INDEX_URL=${PIP_INDEX_URL}
 
 COPY requirements.pin.txt ./
-RUN pip3 install --use-feature=2020-resolver -r requirements.pin.txt -f https://download.pytorch.org/whl/torch_stable.html
+COPY build_on_nano.sh ./
+RUN if [ "ARCH" = "amd64" ] ; then pip3 install --use-feature=2020-resolver -r requirements.pin.txt -f https://download.pytorch.org/whl/torch_stable.html ; else ./build_on_nano.sh ; fi
+
 
 COPY requirements.* ./
-RUN cat requirements.* > .requirements.txt
-RUN  pip3 install --use-feature=2020-resolver -r .requirements.txt
+# RUN cat requirements.* > .requirements.txt
+RUN  pip3 install --use-feature=2020-resolver -r requirements.txt
 
 RUN pip3 uninstall dataclasses -y
 
@@ -87,12 +86,6 @@ COPY rl_agent rl_agent
 # let's copy all our solution files to our workspace
 # if you have more file use the COPY command to move them to the workspace
 COPY solution.py ./
-
-# For ROS Agent - Additional Files
-COPY rosagent.py ./
-
-# FIXME: what is this for? envs are not persisted
-RUN /bin/bash -c "export PYTHONPATH="/usr/local/lib/python3.7/dist-packages:$PYTHONPATH""
 
 ENV HOSTNAME=agent
 ENV VEHICLE_NAME=agent
