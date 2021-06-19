@@ -1,10 +1,10 @@
 
 #!/bin/bash
 
-# This script will install pytorch, torchvision, torchtext and spacy on nano. 
+# This script will install pytorch, torchvision, torchtext and spacy on nano.
 # If you have any of these installed already on your machine, you can skip those.
 
-apt -y update
+apt-get -y update
 
 #Installing PyTorch
 #For latest PyTorch refer original Nvidia Jetson Nano thread - https://devtalk.nvidia.com/default/topic/1049071/jetson-nano/pytorch-for-jetson-nano/.

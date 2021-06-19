@@ -2,7 +2,7 @@ FROM agentdocker
 
 # inspired by https://github.com/duckietown/challenge-aido_LF-baseline-duckietown/blob/daffy/1_develop/DockerfileSim
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility,display
-RUN apt-get update && apt install freeglut3-dev xvfb -y && git clone https://github.com/duckietown/gym-duckietown.git && cd gym-duckietown && git checkout daffy && \
+RUN apt-get update && apt-get install freeglut3-dev xvfb -y && git clone https://github.com/duckietown/gym-duckietown.git && cd gym-duckietown && git checkout daffy && \
     pip3 install -e .
 
 # Set up our own user inside the docker. Inspired by http://wiki.ros.org/docker/Tutorials/GUI
