@@ -57,12 +57,12 @@ RUN echo PIP_INDEX_URL=${PIP_INDEX_URL}
 
 COPY requirements.pin.txt ./
 COPY build_on_nano.sh ./
-RUN if [ "ARCH" = "amd64" ] ; then pip3 install --use-feature=2020-resolver -r requirements.pin.txt -f https://download.pytorch.org/whl/torch_stable.html ; else ./build_on_nano.sh ; fi
+RUN if [ "ARCH" = "amd64" ] ; then pip3 install  -r requirements.pin.txt -f https://download.pytorch.org/whl/torch_stable.html ; else ./build_on_nano.sh ; fi
 
 
 COPY requirements.* ./
 # RUN cat requirements.* > .requirements.txt
-RUN  pip3 install --use-feature=2020-resolver -r requirements.txt
+RUN  pip3 install  -r requirements.txt
 
 RUN pip3 uninstall dataclasses -y
 
