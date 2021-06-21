@@ -1,20 +1,17 @@
-
+import copy
 import os
-import threading
 
 import cv2
 import numpy as np
 import yaml
-import copy
+
 import rospy
 from duckietown_msgs.msg import WheelsCmdStamped
 from sensor_msgs.msg import CameraInfo, CompressedImage
-from std_msgs.msg import Bool
-
-
 
 MODEL_DIR = "./rl_agent/weights"
 MODEL_NAME = "DDPG_123"
+
 
 class ROSAgent:
     def __init__(self, dont_init_rl=False):
@@ -30,27 +27,26 @@ class ROSAgent:
 
         # Publishes onto the corrected image topic
         # since image out of simulator is currently rectified
-        #topic = "/{}/image_topic".format(self.vehicle)
+        # topic = "/{}/image_topic".format(self.vehicle)
         topic = "/{}/camera_node/image/compressed".format(self.vehicle)
         self.cam_pub = rospy.Publisher(topic, CompressedImage, queue_size=10)
 
         # Publisher for camera info - needed for the ground_projection
-        #topic = "/{}/camera_info_topic".format(self.vehicle)
+        # topic = "/{}/camera_info_topic".format(self.vehicle)
         topic = "/{}/camera_node/camera_info".format(self.vehicle)
         self.cam_info_pub = rospy.Publisher(topic, CameraInfo, queue_size=1)
 
         # copied from camera driver:
 
-
         # For intrinsic calibration
-        self.cali_file_folder = '/data/config/calibrations/camera_intrinsic/'
-        self.frame_id = rospy.get_namespace().strip('/') + '/camera_optical_frame'
+        self.cali_file_folder = "/data/config/calibrations/camera_intrinsic/"
+        self.frame_id = rospy.get_namespace().strip("/") + "/camera_optical_frame"
         self.cali_file = self.cali_file_folder + rospy.get_namespace().strip("/") + ".yaml"
 
         # Locate calibration yaml file or use the default otherwise
         if not os.path.isfile(self.cali_file):
             rospy.logwarn("Calibration not found: %s.\n Using default instead." % self.cali_file)
-            self.cali_file = (self.cali_file_folder + "default.yaml")
+            self.cali_file = self.cali_file_folder + "default.yaml"
 
         # Shutdown if no calibration file not found
         if not os.path.isfile(self.cali_file):
@@ -62,8 +58,8 @@ class ROSAgent:
         self.current_camera_info = copy.deepcopy(self.original_camera_info)
         rospy.loginfo("Using calibration file: %s" % self.cali_file)
 
-
         from rl_agent.ddpg import DDPG
+
         self.rl_policy = DDPG()
         if not dont_init_rl:
             try:
@@ -71,7 +67,7 @@ class ROSAgent:
             except:
                 print("Weights for RL policy not found. Using standard initialization.")
 
-        #self.callback_pub = rospy.Publisher("wheel_callback_event", Bool, queue_size=1)
+        # self.callback_pub = rospy.Publisher("wheel_callback_event", Bool, queue_size=1)
 
         # Initializes the node
         rospy.init_node("ROSTemplate")
@@ -94,7 +90,7 @@ class ROSAgent:
         self.updated = True
         self.callback_processed = True
 
-        #self.callback_pub.publish(True)
+        # self.callback_pub.publish(True)
 
     def _publish_info(self):
         """
@@ -109,7 +105,8 @@ class ROSAgent:
         """
         Publishes the image to the compressed_image topic, which triggers the lane following loop
 
-        For training: if wait_for_callback is true, we'll also publish the camera info, and then wait until the action
+        For training: if wait_for_callback is true, we'll also publish the camera info, and then wait until
+        the action
         has been calculated
         """
 
@@ -133,11 +130,13 @@ class ROSAgent:
             self._publish_info()
             while not self.callback_processed:
                 from time import sleep
-                sleep(0.0001)   # TODO if you, yes YOU!, dear coder, have a better idea to synchronize the callback
+
+                sleep(0.0001)  # TODO if you, yes YOU!, dear coder, have a better idea to synchronize the
+                # callback
                 # and the action calculation, please let us know.
-                #try:
+                # try:
                 #    rospy.wait_for_message("wheel_callback_event", Bool, timeout=1)
-                #except ROSException as e:
+                # except ROSException as e:
                 #    pass
 
     @staticmethod
@@ -149,14 +148,14 @@ class ROSAgent:
         Returns:
             :obj:`CameraInfo`: a CameraInfo message object
         """
-        with open(filename, 'r') as stream:
+        with open(filename, "r") as stream:
             calib_data = yaml.load(stream)
         cam_info = CameraInfo()
-        cam_info.width = calib_data['image_width']
-        cam_info.height = calib_data['image_height']
-        cam_info.K = calib_data['camera_matrix']['data']
-        cam_info.D = calib_data['distortion_coefficients']['data']
-        cam_info.R = calib_data['rectification_matrix']['data']
-        cam_info.P = calib_data['projection_matrix']['data']
-        cam_info.distortion_model = calib_data['distortion_model']
+        cam_info.width = calib_data["image_width"]
+        cam_info.height = calib_data["image_height"]
+        cam_info.K = calib_data["camera_matrix"]["data"]
+        cam_info.D = calib_data["distortion_coefficients"]["data"]
+        cam_info.R = calib_data["rectification_matrix"]["data"]
+        cam_info.P = calib_data["projection_matrix"]["data"]
+        cam_info.distortion_model = calib_data["distortion_model"]
         return cam_info

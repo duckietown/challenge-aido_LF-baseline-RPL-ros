@@ -4,6 +4,9 @@ import io
 import time
 
 import numpy as np
+import torch
+from PIL import Image
+
 from aido_schemas import (
     Context,
     DB20Commands,
@@ -11,17 +14,14 @@ from aido_schemas import (
     EpisodeStart,
     GetCommands,
     LEDSCommands,
+    no_hardware_GPU_available,
     protocol_agent_DB20,
     PWMCommands,
     RGB,
     wrap_direct,
 )
-
-from PIL import Image
-
 from rosagent import ROSAgent
-import torch
-import os
+
 
 class ROSTemplateAgent:
     def __init__(self):
@@ -34,19 +34,15 @@ class ROSTemplateAgent:
 
     def check_gpu_available(self, context: Context):
         available = torch.cuda.is_available()
-        req = os.environ.get('AIDO_REQUIRE_GPU', None)
-        context.info(f'torch.cuda.is_available = {available!r} AIDO_REQUIRE_GPU = {req!r}')
-        context.info('init()')
+        context.info(f"torch.cuda.is_available = {available!r}")
+        context.info("init()")
         if available:
             i = torch.cuda.current_device()
             count = torch.cuda.device_count()
             name = torch.cuda.get_device_name(i)
-            context.info(f'device {i} of {count}; name = {name!r}')
+            context.info(f"device {i} of {count}; name = {name!r}")
         else:
-            if req is not None:
-                msg = 'I need a GPU; bailing.'
-                context.error(msg)
-                raise RuntimeError(msg)
+            no_hardware_GPU_available(context)
 
     def on_received_seed(self, context: Context, data: int):
         np.random.seed(data)
@@ -63,11 +59,7 @@ class ROSTemplateAgent:
         self.agent._publish_info()
 
         odometry = data.odometry
-        self.agent._publish_odometry(
-            odometry.resolution_rad,
-            odometry.axis_left_rad,
-            odometry.axis_right_rad
-        )
+        self.agent._publish_odometry(odometry.resolution_rad, odometry.axis_left_rad, odometry.axis_right_rad)
 
     def obs_to_agent(self, obs):
         self.agent._publish_img(obs)
@@ -75,7 +67,7 @@ class ROSTemplateAgent:
 
     def on_received_get_commands(self, context: Context, data: GetCommands):
         if not self.agent.initialized:
-            pwm_left, pwm_right = [0,0]
+            pwm_left, pwm_right = [0, 0]
         else:
             # TODO: let's use a queue here. Performance suffers otherwise.
             # What you should do is: *get the last command*, if available
@@ -98,7 +90,7 @@ class ROSTemplateAgent:
 
 
 def jpg2rgb(image_data):
-    """ Reads JPG bytes as RGB"""
+    """Reads JPG bytes as RGB"""
     im = Image.open(io.BytesIO(image_data))
     im = im.convert("RGB")
     data = np.array(im)

@@ -46,9 +46,9 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
 
 # Before installing
 RUN echo PYTHONPATH=$PYTHONPATH
-RUN pip install pipdeptree
+RUN python3 -m pip install pipdeptree
 RUN pipdeptree
-RUN pip list
+RUN python3 -m pip list
 
 
 ARG PIP_INDEX_URL="https://pypi.org/simple"
@@ -57,23 +57,23 @@ RUN echo PIP_INDEX_URL=${PIP_INDEX_URL}
 
 COPY requirements.pin.txt ./
 COPY build_on_nano.sh ./
-RUN if [ "ARCH" = "amd64" ] ; then pip3 install  -r requirements.pin.txt -f https://download.pytorch.org/whl/torch_stable.html ; else ./build_on_nano.sh ; fi
+RUN if [ "ARCH" = "amd64" ] ; then python3 -m pip install  -r requirements.pin.txt -f https://download.pytorch.org/whl/torch_stable.html ; else ./build_on_nano.sh ; fi
 
 
 COPY requirements.* ./
 # RUN cat requirements.* > .requirements.txt
-RUN  pip3 install  -r requirements.txt
+RUN python3 -m pip install  -r requirements.txt
 
-RUN pip3 uninstall dataclasses -y
+RUN python3 -m pip uninstall dataclasses -y
 
 RUN echo PYTHONPATH=$PYTHONPATH
 RUN pipdeptree
-RUN pip list
+RUN python3 -m pip list
 
-RUN pip3 uninstall -y dataclasses
+RUN python3 -m pip uninstall -y dataclasses
 
 # For ROS Agent - Need to upgrade Pillow for Old ROS stack
-#RUN pip3 install pillow --user --upgrade
+#RUN python3 -m pip install pillow --user --upgrade
 
 
 RUN mkdir /code/submission_ws

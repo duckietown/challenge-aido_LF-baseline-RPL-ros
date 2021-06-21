@@ -1,11 +1,11 @@
 challenge:
-  - aido-LF*
+- aido-LF*
 
 
 protocol: aido2_db18_agent-z2
-user-label: "template-rpl-ros"
+user-label: "baseline-RPL-ros"
 user-payload:
-    features_required:
-        gpu: 1
+  features_required:
+    gpu: 1
 description: |
-    This is a RPL agent built over ROS+torch
+  This is a RPL agent built over ROS+torch

@@ -3,7 +3,7 @@ FROM agentdocker
 # inspired by https://github.com/duckietown/challenge-aido_LF-baseline-duckietown/blob/daffy/1_develop/DockerfileSim
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility,display
 RUN apt-get update && apt-get install freeglut3-dev xvfb -y && git clone https://github.com/duckietown/gym-duckietown.git && cd gym-duckietown && git checkout daffy && \
-    pip3 install -e .
+    python3 -m pip install -e .
 
 # Set up our own user inside the docker. Inspired by http://wiki.ros.org/docker/Tutorials/GUI
 ARG user
@@ -22,6 +22,6 @@ COPY _setup .
 COPY . .
 RUN rm -rf _setup && rm Dockerfile
 
-RUN pip3 uninstall dataclasses -y
+RUN python3 -m pip uninstall dataclasses -y
 
 CMD ["python3", "entrypoint.py"]
