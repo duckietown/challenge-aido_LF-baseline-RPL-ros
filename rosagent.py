@@ -149,7 +149,7 @@ class ROSAgent:
             :obj:`CameraInfo`: a CameraInfo message object
         """
         with open(filename, "r") as stream:
-            calib_data = yaml.load(stream)
+            calib_data = yaml.load(stream, Loader=yaml.Loader)
         cam_info = CameraInfo()
         cam_info.width = calib_data["image_width"]
         cam_info.height = calib_data["image_height"]
