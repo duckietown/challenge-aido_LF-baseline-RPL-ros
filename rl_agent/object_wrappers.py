@@ -1,22 +1,26 @@
 import numpy as np
 
+
 def cropTransposeWrapper(state):
     from PIL import Image
 
     return np.array(Image.fromarray(state.astype(np.uint8)).resize((120, 160))).transpose(2, 0, 1)
 
+
 def normalizeWrapper(state):
-    state_lo=np.min(state)
-    state_hi=np.max(state)
+    state_lo = np.min(state)
+    state_hi = np.max(state)
     return (state - state_lo) / (state_hi - state_lo)
+
 
 def imgWrapper(state):
     from PIL import Image
+
     state = np.array(Image.fromarray(state.astype(np.uint8)).resize((120, 160)))
 
     state = state.astype(np.float64)
-    state_lo=np.min(state)
-    state_hi=np.max(state)
+    state_lo = np.min(state)
+    state_hi = np.max(state)
     state = (state - state_lo) / (state_hi - state_lo)
 
     return state.transpose(2, 0, 1)
@@ -45,13 +49,12 @@ def steeringToWheelVelWrapper(action):
     [wheelvel_left|wheelvel_right] to comply with AIDO evaluation format
     """
 
-    gain=1.0,
-    trim=0.0,
-    radius=0.0318,
-    k=27.0,
-    limit=1.0,
-    wheel_dist=0.102
-
+    gain = (1.0,)
+    trim = (0.0,)
+    radius = (0.0318,)
+    k = (27.0,)
+    limit = (1.0,)
+    wheel_dist = 0.102
 
     vel, angle = action
 

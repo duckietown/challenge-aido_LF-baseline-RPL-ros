@@ -10,12 +10,16 @@ from rosagent import ROSAgent
 import torch
 import os
 
+
 class BurnInRLAgent:
     def predict(self, obs):
-        return np.array([0,0])
+        return np.array([0, 0])
+
+
 class RandomAgent:
     def predict(self, obs):
-        return np.random.uniform(-1,1,(2,))
+        return np.random.uniform(-1, 1, (2,))
+
 
 args = get_ddpg_args_train()
 writer = SummaryWriter(f"./tensorboard/{args.model_filename}")
@@ -40,8 +44,10 @@ rosagent.rl_policy = BurnInRLAgent()
 burnin_agent = BurnInRLAgent()
 random_agent = RandomAgent()
 
+
 def send_obs(obs):
     rosagent._publish_img(obs, wait_for_callback=True)
+
 
 def sample_action(obs):
     rl_action_clean = None
@@ -58,10 +64,7 @@ def sample_action(obs):
         rl_action_clean = rl_action.copy()
 
         if args.expl_noise != 0:
-            noise = np.random.normal(
-                0,
-                args.expl_noise,
-                size=env.action_space.shape[0])
+            noise = np.random.normal(0, args.expl_noise, size=env.action_space.shape[0])
             rl_action += noise.clip(env.action_space.low, env.action_space.high)
 
     rl_action_scaled = rl_action  # 0.5 * (self.rl_action + 1)
@@ -92,13 +95,21 @@ while total_timesteps < args.max_timesteps:
     start = time.time()
     if done:
         if total_timesteps != 0:
-            ddpg_agent.train(replay_buffer, episode_timesteps, args.batch_size, args.discount, args.tau,
-                                  only_critic=total_timesteps < args.start_timesteps)
+            ddpg_agent.train(
+                replay_buffer,
+                episode_timesteps,
+                args.batch_size,
+                args.discount,
+                args.tau,
+                only_critic=total_timesteps < args.start_timesteps,
+            )
 
         # Evaluate episode
         if timesteps_since_eval >= args.eval_freq:
             timesteps_since_eval %= args.eval_freq
-            writer.add_scalar("eval.reward", evaluate_policy(env, rosagent, ddpg_agent, writer), total_timesteps)
+            writer.add_scalar(
+                "eval.reward", evaluate_policy(env, rosagent, ddpg_agent, writer), total_timesteps
+            )
 
             if args.save_models:
                 ddpg_agent.save(f"{args.model_filename}_{total_timesteps}", directory="./rl_agent/weights")

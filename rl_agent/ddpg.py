@@ -14,12 +14,15 @@ if not torch.cuda.is_available():
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+
 class FakeWriter:
     def add_scalar(self, *args):
         pass
 
+
 # Implementation of Deep Deterministic Policy Gradients (DDPG)
 # Paper: https://arxiv.org/abs/1509.02971
+
 
 class ActorCNN(nn.Module):
     def __init__(self, action_dim, max_action):
@@ -42,7 +45,7 @@ class ActorCNN(nn.Module):
         self.bn3 = nn.BatchNorm2d(32)
         self.bn4 = nn.BatchNorm2d(32)
 
-        self.dropout = nn.Dropout(.5)  # remove it
+        self.dropout = nn.Dropout(0.5)  # remove it
 
         self.lin1 = nn.Linear(flat_size, 512)
         self.lin2 = nn.Linear(512, action_dim, bias=False)
@@ -67,7 +70,8 @@ class ActorCNN(nn.Module):
         x = self.lin2(x)
         # switch to tanh
         x[:, 0] = self.tanh(
-            x[:, 0])  # self.max_action * self.sigm(x[:, 0]) # because we don't want the duckie to go backwards
+            x[:, 0]
+        )  # self.max_action * self.sigm(x[:, 0]) # because we don't want the duckie to go backwards
         x[:, 1] = self.tanh(x[:, 1])
 
         return x
@@ -91,7 +95,7 @@ class CriticCNN(nn.Module):
         self.bn3 = nn.BatchNorm2d(32)
         self.bn4 = nn.BatchNorm2d(32)
 
-        self.dropout = nn.Dropout(.5)  # remove it
+        self.dropout = nn.Dropout(0.5)  # remove it
 
         self.lin1 = nn.Linear(flat_size, 256)
         self.lin2 = nn.Linear(256 + action_dim, 128)
@@ -202,9 +206,13 @@ class DDPG(object):
                 target_param.data.copy_(tau * param.data + (1 - tau) * target_param.data)
 
     def save(self, filename, directory):
-        torch.save(self.actor.state_dict(), '{}/{}_actor.pth'.format(directory, filename))
-        torch.save(self.critic.state_dict(), '{}/{}_critic.pth'.format(directory, filename))
+        torch.save(self.actor.state_dict(), "{}/{}_actor.pth".format(directory, filename))
+        torch.save(self.critic.state_dict(), "{}/{}_critic.pth".format(directory, filename))
 
     def load(self, filename, directory):
-        self.actor.load_state_dict(torch.load('{}/{}_actor.pth'.format(directory, filename), map_location=device))
-        self.critic.load_state_dict(torch.load('{}/{}_critic.pth'.format(directory, filename), map_location=device))
+        self.actor.load_state_dict(
+            torch.load("{}/{}_actor.pth".format(directory, filename), map_location=device)
+        )
+        self.critic.load_state_dict(
+            torch.load("{}/{}_critic.pth".format(directory, filename), map_location=device)
+        )

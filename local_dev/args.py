@@ -1,12 +1,14 @@
 import argparse
 
+
 def _str2bool(string):
     string = string.lower()
     if string == "1" or string == "true":
         return True
     if string == "0" or string == "false":
         return False
-    raise Exception("unkown boolean value '"+string+"'")
+    raise Exception("unkown boolean value '" + string + "'")
+
 
 def get_parser():
     parser = argparse.ArgumentParser()

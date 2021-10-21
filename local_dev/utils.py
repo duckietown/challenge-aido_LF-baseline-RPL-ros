@@ -6,6 +6,7 @@ import numpy as np
 import random
 from rl_agent.object_wrappers import normalizeWrapper, cropTransposeWrapper
 
+
 def seed(seed):
     torch.manual_seed(seed)
     np.random.seed(seed)
@@ -56,8 +57,9 @@ class ReplayBuffer(object):
             "controller_action": np.stack(controller_actions),
             "action": np.stack(actions),
             "reward": np.stack(rewards).reshape(-1, 1),
-            "done": np.stack(dones).reshape(-1, 1)
+            "done": np.stack(dones).reshape(-1, 1),
         }
+
 
 def evaluate_policy(env, ros_agent, ddpg_agent, writer, eval_episodes=10, max_timesteps=500):
     old_rectifier = ros_agent.rl_policy
@@ -66,7 +68,7 @@ def evaluate_policy(env, ros_agent, ddpg_agent, writer, eval_episodes=10, max_ti
     ddpg_agent.actor.eval()
     ddpg_agent.critic.eval()
 
-    avg_reward = 0.
+    avg_reward = 0.0
     for i in range(eval_episodes):
         obs = env.reset()
         done = False

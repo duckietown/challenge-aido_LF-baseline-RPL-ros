@@ -11,13 +11,17 @@ import os
 import subprocess
 
 with open("./run_and_start.sh", "r") as f:
-    command = re.sub(r'python.*?\n', '', f.read())  # TODO is this really the best way to be compliant with the fork's parent?
+    command = re.sub(
+        r"python.*?\n", "", f.read()
+    )  # TODO is this really the best way to be compliant with the fork's parent?
+
 
 def roscore():
-    proc = subprocess.Popen(command, shell=True, executable='/bin/bash', universal_newlines=True)
+    proc = subprocess.Popen(command, shell=True, executable="/bin/bash", universal_newlines=True)
     proc.wait()
     print("\n\n!!!\nROSCORE CRASHED. EXITING NOW!\n!!!\n\n", file=sys.stderr)
     exit(-128)
+
 
 thread = threading.Thread(target=roscore)
 thread.start()
