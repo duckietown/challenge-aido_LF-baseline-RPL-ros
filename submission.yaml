@@ -9,3 +9,4 @@ user-payload:
     gpu: 1
 description: |
   This is a RPL agent built over ROS+torch
+validation_challenge: aido-hello-sim-validation
