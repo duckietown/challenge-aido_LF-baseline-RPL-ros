@@ -5,21 +5,9 @@ ARG MAJOR=daffy
 ARG BASE_TAG=${MAJOR}-${ARCH}
 ARG DOCKER_REGISTRY=docker.io
 
-FROM ${DOCKER_REGISTRY}/duckietown/dt-car-interface:${BASE_TAG} AS dt-car-interface
-
-FROM ${DOCKER_REGISTRY}/duckietown/challenge-aido_lf-template-ros:${BASE_TAG} AS template
-
-FROM ${DOCKER_REGISTRY}/duckietown/dt-core:${BASE_TAG} AS base
+FROM ${DOCKER_REGISTRY}/duckietown/dt-challenge-aido_LF-baseline-duckietown:${BASE_TAG}
 
 WORKDIR /code
-
-COPY --from=dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface ${CATKIN_WS_DIR}/src/dt-car-interface
-
-COPY --from=template /data/config /data/config
-COPY --from=template /code/rosagent.py .
-
-WORKDIR /code
-
 
 # here, we install the requirements, some requirements come by default
 # you can add more if you need to in requirements.txt
@@ -75,17 +63,11 @@ RUN python3 -m pip uninstall -y dataclasses
 # For ROS Agent - Need to upgrade Pillow for Old ROS stack
 #RUN python3 -m pip install pillow --user --upgrade
 
-
-RUN mkdir /code/submission_ws
-
-COPY submission_ws/src /code/submission_ws/src
-COPY launchers /code
-
 COPY rl_agent rl_agent
 
 # let's copy all our solution files to our workspace
 # if you have more file use the COPY command to move them to the workspace
-COPY solution.py ./
+
 
 ENV HOSTNAME=agent
 ENV VEHICLE_NAME=agent
@@ -94,8 +76,8 @@ ENV ROS_MASTER_URI=http://localhost:11311
 
 RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
     . ${CATKIN_WS_DIR}/devel/setup.bash  && \
-    catkin build --workspace /code/catkin_ws && \
-    catkin build --workspace /code/submission_ws
+    catkin build --workspace /code/solution
+
 
 
 # Note: here we try to import the solution code
@@ -103,4 +85,4 @@ RUN . /opt/ros/${ROS_DISTRO}/setup.sh && \
 RUN /bin/bash -c "source ${CATKIN_WS_DIR}/devel/setup.bash && python3 -c 'from solution import *'"
 
 ENV DISABLE_CONTRACTS=1
-CMD ["bash", "run_and_start.sh"]
+CMD ["bash", "/code/run_and_start.sh"]
