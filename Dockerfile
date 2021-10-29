@@ -5,7 +5,7 @@ ARG MAJOR=daffy
 ARG BASE_TAG=${MAJOR}-${ARCH}
 ARG DOCKER_REGISTRY=docker.io
 
-FROM ${DOCKER_REGISTRY}/duckietown/dt-challenge-aido_LF-baseline-duckietown:${BASE_TAG}
+FROM ${DOCKER_REGISTRY}/duckietown/challenge-aido_lf-baseline-duckietown:${BASE_TAG}
 
 WORKDIR /code
 
