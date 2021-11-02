@@ -1,6 +1,6 @@
 # Definition of Submission container
 
-ARG ARCH=arm64v8
+ARG ARCH=amd64
 ARG MAJOR=daffy
 ARG BASE_TAG=${MAJOR}-${ARCH}
 ARG DOCKER_REGISTRY=docker.io
