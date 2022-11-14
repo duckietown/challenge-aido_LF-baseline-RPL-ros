@@ -1,4 +1,4 @@
 VERSION=0.0.0
 TYPE=template-aido
 TYPE_VERSION=2
-CONTAINER_TARGET=duckietown/challenge-aido_lf-baseline-rpl-ros:daffy-amd64
+CONTAINER_TARGET=duckietown/challenge-aido_lf-baseline-rpl-ros:daffy
